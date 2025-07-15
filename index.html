@@ -288,6 +288,11 @@
                     <textarea id="notes" name="notes" placeholder="Informations supplémentaires, contraintes particulières, demandes spéciales..."></textarea>
                 </div>
 
+                <!-- DEBUG: Test Supabase Connection -->
+                <button type="button" onclick="testSupabaseConnection()" style="background: #e74c3c; margin-bottom: 20px; padding: 10px; border: none; color: white; border-radius: 5px; width: 100%;">
+                    🔍 TEST SUPABASE CONNECTION
+                </button>
+
                 <button type="submit" class="submit-btn" id="submitBtn">
                     📋 Envoyer ma demande de soumission
                 </button>
@@ -317,24 +322,75 @@
 
         let availableServices = [];
 
+        // DEBUG: Test Supabase connection
+        async function testSupabaseConnection() {
+            console.log('🔍 Testing Supabase connection...');
+            console.log('URL:', SUPABASE_URL);
+            console.log('Key:', SUPABASE_ANON_KEY.substring(0, 20) + '...');
+            
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=*&limit=5`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', [...response.headers.entries()]);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ Supabase error:', errorText);
+                    alert(`❌ Supabase Error ${response.status}: ${errorText}`);
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log('✅ Supabase success:', data);
+                alert(`✅ Connection successful! Found ${data.length} services in database.`);
+                
+            } catch (error) {
+                console.error('❌ Network error:', error);
+                alert(`❌ Network Error: ${error.message}`);
+            }
+        }
+
         // Load services from Supabase on page load
         async function loadServices() {
+            console.log('🌱 Loading services from Supabase...');
+            
+            // Check if configuration is set
+            if (SUPABASE_URL === 'https://dfrjllweqpmdtqwofshd.supabase.co' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY_HERE') {
+                console.warn('⚠️ Supabase configuration not set, using fallback services');
+                renderFallbackServices();
+                return;
+            }
+            
             try {
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,description,prix_unitaire,unite,categorie&is_active=eq.true&order=ordre_affichage`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
                     }
                 });
 
+                console.log('📡 Supabase response status:', response.status);
+
                 if (!response.ok) {
-                    throw new Error('Failed to load services');
+                    const errorText = await response.text();
+                    console.error('❌ Supabase API error:', response.status, errorText);
+                    throw new Error(`Supabase API error: ${response.status} - ${errorText}`);
                 }
 
                 availableServices = await response.json();
+                console.log('✅ Loaded services from Supabase:', availableServices.length);
                 renderServices();
             } catch (error) {
-                console.error('Error loading services:', error);
+                console.error('❌ Error loading services from Supabase:', error);
+                console.log('🔄 Falling back to hardcoded services');
                 renderFallbackServices();
             }
         }
