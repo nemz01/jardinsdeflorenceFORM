@@ -9,6 +9,126 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        // Quick fix function to reload services
+        async function quickFixSupabase() {
+            console.log('🔧 Quick fix: Attempting to reload services...');
+            
+            // Show loading in services container
+            const container = document.getElementById('servicesContainer');
+            container.innerHTML = '<div class="loading">🔄 Rechargement des services...</div>';
+            
+            try {
+                // Try multiple approaches
+                const approaches = [
+                    // Approach 1: All columns, no filters
+                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue`, name: 'All columns' },
+                    // Approach 2: Only essential columns
+                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,prix_unitaire,unite`, name: 'Essential columns' },
+                    // Approach 3: With RLS bypass attempt (if user has elevated permissions)
+                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue?select=*`, name: 'RLS bypass attempt', headers: { 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
+                ];
+                
+                for (const approach of approaches) {
+                    console.log(`🔧 Trying: ${approach.name}...`);
+                    
+                    const response = await fetch(approach.url, {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            ...(approach.headers || {})
+                        // Quick fix function to reload services
+        async function quickFixSupabase() {
+            console.log('🔧 Quick fix: Attempting to reload services...');
+            
+            // Show loading in services container
+            const container = document.getElementById('servicesContainer');
+            container.innerHTML = '<div class="loading">🔄 Rechargement des services...</div>';
+            
+            try {
+                // Try multiple approaches
+                const approaches = [
+                    // Approach 1: All columns, no filters
+                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue`, name: 'All columns' },
+                    // Approach 2: Only essential columns
+                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,prix_unitaire,unite`, name: 'Essential columns' },
+                    // Approach 3: With RLS bypass attempt (if user has elevated permissions)
+                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue?select=*`, name: 'RLS bypass attempt', headers: { 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
+                ];
+                
+                for (const approach of approaches) {
+                    console.log(`🔧 Trying: ${approach.name}...`);
+                    
+                    const response = await fetch(approach.url, {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            ...(approach.headers || {})
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log(`✅ ${approach.name} success:`, data.length, 'services');
+                        
+                        if (data.length > 0) {
+                            availableServices = data.map(service => ({
+                                id: service.id,
+                                nom: service.nom || service.name || 'Service sans nom',
+                                description: service.description || '',
+                                prix_unitaire: service.prix_unitaire || service.price || 0,
+                                unite: service.unite || service.unit || 'unité',
+                                categorie: service.categorie || service.category || ''
+                            }));
+                            
+                            renderServices();
+                            alert(`✅ Services rechargés avec succès!\n\n${data.length} services trouvés avec l'approche: ${approach.name}`);
+                            return;
+                        }
+                    }
+                }
+                
+                // If all approaches fail
+                throw new Error('Toutes les approches ont échoué');
+                
+            } catch (error) {
+                console.error('❌ Quick fix failed:', error);
+                renderFallbackServices();
+                alert(`❌ Impossible de charger les services depuis Supabase.\n\nUtilisation des services de démonstration.\n\nProblème possible:\n- RLS (Row Level Security) bloque l'accès\n- Table vide\n- Permissions insuffisantes\n\nVeuillez vérifier votre configuration Supabase.`);
+            }
+        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log(`✅ ${approach.name} success:`, data.length, 'services');
+                        
+                        if (data.length > 0) {
+                            availableServices = data.map(service => ({
+                                id: service.id,
+                                nom: service.nom || service.name || 'Service sans nom',
+                                description: service.description || '',
+                                prix_unitaire: service.prix_unitaire || service.price || 0,
+                                unite: service.unite || service.unit || 'unité',
+                                categorie: service.categorie || service.category || ''
+                            }));
+                            
+                            renderServices();
+                            alert(`✅ Services rechargés avec succès!\n\n${data.length} services trouvés avec l'approche: ${approach.name}`);
+                            return;
+                        }
+                    }
+                }
+                
+                // If all approaches fail
+                throw new Error('Toutes les approches ont échoué');
+                
+            } catch (error) {
+                console.error('❌ Quick fix failed:', error);
+                renderFallbackServices();
+                alert(`❌ Impossible de charger les services depuis Supabase.\n\nUtilisation des services de démonstration.\n\nProblème possible:\n- RLS (Row Level Security) bloque l'accès\n- Table vide\n- Permissions insuffisantes\n\nVeuillez vérifier votre configuration Supabase.`);
+            }
         }
 
         body {
@@ -519,6 +639,11 @@
                         🚀 Test n8n Webhook
                     </button>
                 </div>
+                
+                <!-- Quick Fix Button if Supabase issues -->
+                <button type="button" onclick="quickFixSupabase()" style="background: #7c3aed; color: white; padding: 12px 20px; border: none; border-radius: 8px; width: 100%; margin-bottom: 20px; font-size: 0.9em;">
+                    🔧 Quick Fix: Reload Services
+                </button>
 
                 <button type="submit" class="submit-btn" id="submitBtn">
                     📋 Envoyer ma demande de soumission
@@ -556,9 +681,9 @@
             console.log('Key:', SUPABASE_ANON_KEY.substring(0, 20) + '...');
             
             try {
-                // Test multiple queries to find the issue
-                console.log('📋 Test 1: Basic query without filters...');
-                const response1 = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=*&limit=10`, {
+                // Test 1: Basic query without specific columns
+                console.log('📋 Test 1: Basic query all columns...');
+                const response1 = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
@@ -576,12 +701,30 @@
                 }
                 
                 const data1 = await response1.json();
-                console.log('✅ Basic query success:', data1.length, 'services found');
-                console.log('📊 Sample service:', data1[0]);
+                console.log('✅ All columns query:', data1.length, 'services found');
                 
-                // Test 2: With is_active filter
-                console.log('📋 Test 2: With is_active filter...');
-                const response2 = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=*&is_active=eq.true&limit=10`, {
+                if (data1.length > 0) {
+                    console.log('📊 Available columns:', Object.keys(data1[0]));
+                    console.log('📊 Sample service:', data1[0]);
+                }
+                
+                // Test 2: Count total rows
+                console.log('📋 Test 2: Count total rows...');
+                const response2 = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=count`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'count=exact'
+                    }
+                });
+                
+                const count = await response2.json();
+                console.log('📊 Total rows in table:', count);
+                
+                // Test 3: Try different column names based on schema
+                console.log('📋 Test 3: Testing with exact column names...');
+                const response3 = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,prix_unitaire,unite`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
@@ -589,22 +732,21 @@
                     }
                 });
                 
-                const data2 = await response2.json();
-                console.log('✅ With is_active filter:', data2.length, 'services found');
+                const data3 = await response3.json();
+                console.log('✅ Specific columns query:', data3.length, 'services found');
                 
-                // Test 3: Check column names
-                if (data1.length > 0) {
-                    console.log('📊 Available columns:', Object.keys(data1[0]));
-                }
-                
-                alert(`✅ Supabase Connection Results:
-                
-Basic query: ${data1.length} services
-With is_active=true: ${data2.length} services
+                // Alert summary
+                alert(`🔍 Supabase Diagnostic Results:
 
-${data1.length === 0 ? '⚠️ Your table appears to be empty!' : 'Table has data but filters may be the issue.'}
+Test 1 - All columns: ${data1.length} services
+Test 3 - Specific columns: ${data3.length} services
 
-Check console for detailed logs.`);
+${data1.length === 0 ? 
+    '❌ PROBLEM: Table appears empty or RLS is blocking access!\n\nSolutions:\n- Disable RLS temporarily\n- Check anon key permissions\n- Verify table has data' : 
+    '✅ Table has data - column names might be the issue'
+}
+
+Check console for detailed column information.`);
                 
             } catch (error) {
                 console.error('❌ Network error:', error);
@@ -657,14 +799,76 @@ Check console for detailed logs.`);
             }
         }
 
+        // Quick fix function to reload services
+        async function quickFixSupabase() {
+            console.log('🔧 Quick fix: Attempting to reload services...');
+            
+            // Show loading in services container
+            const container = document.getElementById('servicesContainer');
+            container.innerHTML = '<div class="loading">🔄 Rechargement des services...</div>';
+            
+            try {
+                // Try multiple approaches
+                const approaches = [
+                    // Approach 1: All columns, no filters
+                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue`, name: 'All columns' },
+                    // Approach 2: Only essential columns
+                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,prix_unitaire,unite`, name: 'Essential columns' },
+                    // Approach 3: With RLS bypass attempt (if user has elevated permissions)
+                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue?select=*`, name: 'RLS bypass attempt', headers: { 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
+                ];
+                
+                for (const approach of approaches) {
+                    console.log(`🔧 Trying: ${approach.name}...`);
+                    
+                    const response = await fetch(approach.url, {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            ...(approach.headers || {})
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log(`✅ ${approach.name} success:`, data.length, 'services');
+                        
+                        if (data.length > 0) {
+                            availableServices = data.map(service => ({
+                                id: service.id,
+                                nom: service.nom || service.name || 'Service sans nom',
+                                description: service.description || '',
+                                prix_unitaire: service.prix_unitaire || service.price || 0,
+                                unite: service.unite || service.unit || 'unité',
+                                categorie: service.categorie || service.category || ''
+                            }));
+                            
+                            renderServices();
+                            alert(`✅ Services rechargés avec succès!\n\n${data.length} services trouvés avec l'approche: ${approach.name}`);
+                            return;
+                        }
+                    }
+                }
+                
+                // If all approaches fail
+                throw new Error('Toutes les approches ont échoué');
+                
+            } catch (error) {
+                console.error('❌ Quick fix failed:', error);
+                renderFallbackServices();
+                alert(`❌ Impossible de charger les services depuis Supabase.\n\nUtilisation des services de démonstration.\n\nProblème possible:\n- RLS (Row Level Security) bloque l'accès\n- Table vide\n- Permissions insuffisantes\n\nVeuillez vérifier votre configuration Supabase.`);
+            }
+        }
+
         // Load services from Supabase on page load
         async function loadServices() {
             console.log('🌱 Loading services from Supabase...');
             
             try {
-                // Simplified query without problematic filters
-                console.log('📋 Trying simplified query first...');
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,description,prix_unitaire,unite,categorie&limit=50`, {
+                // Try the simplest possible query first
+                console.log('📋 Trying simplest query: select all...');
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
@@ -680,16 +884,28 @@ Check console for detailed logs.`);
                     throw new Error(`Supabase API error: ${response.status} - ${errorText}`);
                 }
 
-                availableServices = await response.json();
-                console.log('✅ Loaded services from Supabase:', availableServices.length);
-                console.log('📋 Services data:', availableServices);
+                const allServices = await response.json();
+                console.log('✅ Raw Supabase data:', allServices.length, 'total services');
+                console.log('📊 Sample service:', allServices[0]);
                 
-                if (availableServices.length > 0) {
-                    renderServices();
-                } else {
-                    console.log('⚠️ No services found, using fallback');
-                    renderFallbackServices();
+                if (allServices.length === 0) {
+                    console.error('❌ Table is empty or RLS is blocking access');
+                    throw new Error('No services found in database');
                 }
+                
+                // Map the services to our expected format
+                availableServices = allServices.map(service => ({
+                    id: service.id,
+                    nom: service.nom,
+                    description: service.description || '',
+                    prix_unitaire: service.prix_unitaire,
+                    unite: service.unite,
+                    categorie: service.categorie || ''
+                }));
+                
+                console.log('✅ Mapped services:', availableServices.length);
+                renderServices();
+                
             } catch (error) {
                 console.error('❌ Error loading services from Supabase:', error);
                 console.log('🔄 Falling back to hardcoded services');
