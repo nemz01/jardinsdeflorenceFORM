@@ -12,41 +12,99 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
             min-height: 100vh;
             padding: 20px;
+            color: #334155;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
             overflow: hidden;
+            backdrop-filter: blur(10px);
         }
 
         .header {
-            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            background: linear-gradient(135deg, #064e3b 0%, #047857 25%, #059669 75%, #10b981 100%);
             color: white;
-            padding: 40px;
+            padding: 50px 40px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
         }
 
         .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 600;
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .icon {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
         }
 
         .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-weight: 300;
+            letter-spacing: 0.01em;
         }
 
         .form-container {
-            padding: 40px;
+            padding: 50px;
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #064e3b;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title .icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
         }
 
         .form-group {
@@ -55,116 +113,181 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 600;
-            color: #333;
+            color: #1f2937;
             font-size: 1.1em;
         }
 
         .required {
-            color: #e74c3c;
-            margin-left: 3px;
+            color: #dc2626;
+            margin-left: 4px;
         }
 
         .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .form-group textarea {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e8ed;
-            border-radius: 10px;
+            padding: 16px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
             font-size: 1em;
             transition: all 0.3s ease;
             font-family: inherit;
+            background: #fafafa;
         }
 
         .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
+        .form-group textarea:focus {
             outline: none;
-            border-color: #2c5530;
-            box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.1);
+            border-color: #10b981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            background: white;
         }
 
         .form-group textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 120px;
         }
 
         .services-section {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 15px;
-            margin: 30px 0;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+            border: 1px solid #bbf7d0;
+            position: relative;
+        }
+
+        .services-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(16,185,129,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+            border-radius: 20px;
+            opacity: 0.5;
+        }
+
+        .services-section > * {
+            position: relative;
+            z-index: 1;
         }
 
         .services-section h3 {
-            color: #2c5530;
-            margin-bottom: 20px;
-            font-size: 1.4em;
+            color: #064e3b;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .service-item {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 16px;
             border: 2px solid transparent;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
         }
 
         .service-item:hover {
-            border-color: #2c5530;
-            transform: translateY(-1px);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-color: #10b981;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(16, 185, 129, 0.15);
+        }
+
+        .service-item:hover::before {
+            transform: scaleY(1);
         }
 
         .service-item.selected {
-            border-color: #2c5530;
-            background: #f0f7f1;
-            box-shadow: 0 3px 10px rgba(44, 85, 48, 0.1);
+            border-color: #10b981;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
+        }
+
+        .service-item.selected::before {
+            transform: scaleY(1);
         }
 
         .service-header {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             cursor: pointer;
         }
 
         .service-checkbox {
-            margin-right: 15px;
+            margin-right: 16px;
             transform: scale(1.3);
             cursor: pointer;
+            accent-color: #10b981;
         }
 
         .service-name {
             font-weight: 600;
-            color: #2c5530;
+            color: #064e3b;
             flex-grow: 1;
             cursor: pointer;
-            padding: 5px 0;
+            padding: 8px 0;
+            font-size: 1.1em;
         }
 
         .service-name:hover {
-            color: #1a3020;
+            color: #047857;
         }
 
         .service-price {
-            color: #666;
-            font-weight: 500;
+            color: #059669;
+            font-weight: 600;
+            font-size: 1.1em;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
         }
 
         .service-description {
-            color: #777;
-            font-size: 0.9em;
-            margin-left: 35px;
-            margin-bottom: 15px;
+            color: #6b7280;
+            font-size: 0.95em;
+            margin-left: 40px;
+            margin-bottom: 16px;
+            font-style: italic;
         }
 
         .quantity-input {
-            margin-left: 35px;
+            margin-left: 40px;
             display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .quantity-input.show {
@@ -172,26 +295,48 @@
         }
 
         .quantity-input input {
-            margin-top: 10px;
+            margin-top: 12px;
+            border-color: #10b981;
+            background: #f0fdf4;
         }
 
-        .submit-btn {
-            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+        .submit-btn, .test-btn {
+            background: linear-gradient(135deg, #064e3b 0%, #047857 25%, #059669 75%, #10b981 100%);
             color: white;
-            padding: 18px 40px;
+            padding: 18px 32px;
             border: none;
-            border-radius: 50px;
+            border-radius: 16px;
             font-size: 1.2em;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             width: 100%;
             margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
         }
 
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(44, 85, 48, 0.3);
+        .submit-btn::before, .test-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover::before, .test-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover, .test-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(16, 185, 129, 0.4);
         }
 
         .submit-btn:disabled {
@@ -200,57 +345,106 @@
             transform: none;
         }
 
+        .test-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .test-btn {
+            width: 48%;
+            margin-top: 0;
+            padding: 12px 20px;
+            font-size: 0.9em;
+        }
+
+        .test-btn.supabase {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+        }
+
+        .test-btn.webhook {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+        }
+
         .loading {
             display: none;
             text-align: center;
-            padding: 20px;
-            color: #666;
+            padding: 40px;
+            color: #059669;
+            font-size: 1.1em;
+        }
+
+        .loading::before {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #bbf7d0;
+            border-top: 3px solid #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message, .error-message {
+            display: none;
+            padding: 30px;
+            border-radius: 16px;
+            margin-top: 30px;
+            text-align: center;
+            font-weight: 500;
         }
 
         .success-message {
-            display: none;
-            background: #d4edda;
-            color: #155724;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            text-align: center;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            color: #064e3b;
+            border: 2px solid #bbf7d0;
         }
 
         .error-message {
-            display: none;
-            background: #f8d7da;
-            color: #721c24;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            text-align: center;
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            color: #991b1b;
+            border: 2px solid #fca5a5;
         }
 
         .footer {
-            background: #f8f9fa;
-            padding: 20px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            padding: 30px;
             text-align: center;
-            color: #666;
+            color: #64748b;
             font-size: 0.9em;
+            border-top: 1px solid #e2e8f0;
         }
 
         @media (max-width: 768px) {
             .container {
                 margin: 10px;
-                border-radius: 15px;
+                border-radius: 20px;
             }
             
             .header {
-                padding: 30px 20px;
+                padding: 40px 30px;
             }
             
             .form-container {
-                padding: 30px 20px;
+                padding: 40px 30px;
             }
             
             .header h1 {
-                font-size: 2em;
+                font-size: 2.2em;
+            }
+
+            .test-buttons {
+                flex-direction: column;
+            }
+
+            .test-btn {
+                width: 100%;
             }
         }
     </style>
@@ -258,51 +452,73 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🌿 Jardins de Florence</h1>
-            <p>Demande de soumission personnalisée</p>
+            <div class="header-content">
+                <span class="icon">🌿</span>
+                <h1>Jardins de Florence</h1>
+                <p>Demande de soumission personnalisée</p>
+            </div>
         </div>
 
         <div class="form-container">
             <form id="quoteForm">
-                <div class="form-group">
-                    <label for="nom">Nom complet <span class="required">*</span></label>
-                    <input type="text" id="nom" name="nom" required placeholder="Votre nom complet">
-                </div>
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="icon">👤</span>
+                        Informations client
+                    </div>
 
-                <div class="form-group">
-                    <label for="email">Adresse courriel <span class="required">*</span></label>
-                    <input type="email" id="email" name="email" required placeholder="votre@email.com">
-                </div>
+                    <div class="form-group">
+                        <label for="nom">Nom complet <span class="required">*</span></label>
+                        <input type="text" id="nom" name="nom" required placeholder="Votre nom complet">
+                    </div>
 
-                <div class="form-group">
-                    <label for="telephone">Téléphone</label>
-                    <input type="tel" id="telephone" name="telephone" placeholder="(514) 555-1234">
-                </div>
+                    <div class="form-group">
+                        <label for="email">Adresse courriel <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" required placeholder="votre@email.com">
+                    </div>
 
-                <div class="form-group">
-                    <label for="adresse">Adresse du projet</label>
-                    <textarea id="adresse" name="adresse" placeholder="Adresse complète où les services seront réalisés"></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="telephone">Téléphone</label>
+                        <input type="tel" id="telephone" name="telephone" placeholder="(514) 555-1234">
+                    </div>
 
-                <div class="services-section">
-                    <h3>Services demandés <span class="required">*</span></h3>
-                    <div id="servicesContainer">
-                        <div class="loading">🌱 Chargement des services disponibles...</div>
+                    <div class="form-group">
+                        <label for="adresse">Adresse du projet</label>
+                        <textarea id="adresse" name="adresse" placeholder="Adresse complète où les services seront réalisés"></textarea>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="notes">Notes additionnelles</label>
-                    <textarea id="notes" name="notes" placeholder="Informations supplémentaires, contraintes particulières, demandes spéciales..."></textarea>
+                <div class="services-section">
+                    <h3>
+                        <span class="icon">🛠️</span>
+                        Services demandés <span class="required">*</span>
+                    </h3>
+                    <div id="servicesContainer">
+                        <div class="loading">Chargement des services disponibles...</div>
+                    </div>
                 </div>
 
-                <!-- DEBUG: Test Connections -->
-                <button type="button" onclick="testSupabaseConnection()" style="background: #e74c3c; margin-bottom: 10px; padding: 10px; border: none; color: white; border-radius: 5px; width: 48%; margin-right: 4%;">
-                    🔍 TEST SUPABASE
-                </button>
-                <button type="button" onclick="testN8nWebhook()" style="background: #f39c12; margin-bottom: 20px; padding: 10px; border: none; color: white; border-radius: 5px; width: 48%;">
-                    🚀 TEST N8N WEBHOOK
-                </button>
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="icon">📝</span>
+                        Informations additionnelles
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Notes et demandes spéciales</label>
+                        <textarea id="notes" name="notes" placeholder="Informations supplémentaires, contraintes particulières, demandes spéciales..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Test Buttons -->
+                <div class="test-buttons">
+                    <button type="button" class="test-btn supabase" onclick="testSupabaseConnection()">
+                        🔍 Test Supabase
+                    </button>
+                    <button type="button" class="test-btn webhook" onclick="testN8nWebhook()">
+                        🚀 Test n8n Webhook
+                    </button>
+                </div>
 
                 <button type="submit" class="submit-btn" id="submitBtn">
                     📋 Envoyer ma demande de soumission
@@ -340,8 +556,8 @@
             console.log('Key:', SUPABASE_ANON_KEY.substring(0, 20) + '...');
             
             try {
-                // Test 1: Check if table exists
-                console.log('📋 Test 1: Checking services_catalogue table...');
+                // Test multiple queries to find the issue
+                console.log('📋 Test 1: Basic query without filters...');
                 const response1 = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=*&limit=10`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
@@ -351,7 +567,6 @@
                 });
                 
                 console.log('Response status:', response1.status);
-                console.log('Response headers:', [...response1.headers.entries()]);
                 
                 if (!response1.ok) {
                     const errorText = await response1.text();
@@ -360,10 +575,36 @@
                     return;
                 }
                 
-                const data = await response1.json();
-                console.log('✅ Supabase success:', data);
-                console.log('📊 Table structure:', data.length > 0 ? Object.keys(data[0]) : 'No data');
-                alert(`✅ Connection successful! Found ${data.length} services in database.${data.length === 0 ? '\n\n⚠️ Your table is empty or has no matching records.' : ''}`);
+                const data1 = await response1.json();
+                console.log('✅ Basic query success:', data1.length, 'services found');
+                console.log('📊 Sample service:', data1[0]);
+                
+                // Test 2: With is_active filter
+                console.log('📋 Test 2: With is_active filter...');
+                const response2 = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=*&is_active=eq.true&limit=10`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data2 = await response2.json();
+                console.log('✅ With is_active filter:', data2.length, 'services found');
+                
+                // Test 3: Check column names
+                if (data1.length > 0) {
+                    console.log('📊 Available columns:', Object.keys(data1[0]));
+                }
+                
+                alert(`✅ Supabase Connection Results:
+                
+Basic query: ${data1.length} services
+With is_active=true: ${data2.length} services
+
+${data1.length === 0 ? '⚠️ Your table appears to be empty!' : 'Table has data but filters may be the issue.'}
+
+Check console for detailed logs.`);
                 
             } catch (error) {
                 console.error('❌ Network error:', error);
@@ -421,7 +662,9 @@
             console.log('🌱 Loading services from Supabase...');
             
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,description,prix_unitaire,unite,categorie&is_active=eq.true&order=ordre_affichage`, {
+                // Simplified query without problematic filters
+                console.log('📋 Trying simplified query first...');
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,description,prix_unitaire,unite,categorie&limit=50`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
@@ -440,7 +683,13 @@
                 availableServices = await response.json();
                 console.log('✅ Loaded services from Supabase:', availableServices.length);
                 console.log('📋 Services data:', availableServices);
-                renderServices();
+                
+                if (availableServices.length > 0) {
+                    renderServices();
+                } else {
+                    console.log('⚠️ No services found, using fallback');
+                    renderFallbackServices();
+                }
             } catch (error) {
                 console.error('❌ Error loading services from Supabase:', error);
                 console.log('🔄 Falling back to hardcoded services');
@@ -496,11 +745,11 @@
         function renderFallbackServices() {
             console.log('🔄 Using fallback services');
             availableServices = [
-                { id: '1', nom: 'Tonte de pelouse', prix_unitaire: 29, unite: 'm²', description: 'Tonte régulière avec ramassage' },
-                { id: '2', nom: 'Taille de haies', prix_unitaire: 85, unite: 'heure', description: 'Taille professionnelle et nettoyage' },
-                { id: '3', nom: 'Déneigement', prix_unitaire: 355, unite: 'forfait', description: 'Service de déneigement saisonnier' },
-                { id: '4', nom: 'Aménagement paysager', prix_unitaire: 120, unite: 'heure', description: 'Conception et réalisation d\'aménagements' },
-                { id: '5', nom: 'Entretien saisonnier', prix_unitaire: 300, unite: 'saison', description: 'Entretien complet selon la saison' }
+                { id: 'fallback_1', nom: 'Tonte de pelouse', prix_unitaire: 29, unite: 'm²', description: 'Tonte régulière avec ramassage' },
+                { id: 'fallback_2', nom: 'Taille de haies', prix_unitaire: 85, unite: 'heure', description: 'Taille professionnelle et nettoyage' },
+                { id: 'fallback_3', nom: 'Déneigement', prix_unitaire: 355, unite: 'forfait', description: 'Service de déneigement saisonnier' },
+                { id: 'fallback_4', nom: 'Aménagement paysager', prix_unitaire: 120, unite: 'heure', description: 'Conception et réalisation d\'aménagements' },
+                { id: 'fallback_5', nom: 'Entretien saisonnier', prix_unitaire: 300, unite: 'saison', description: 'Entretien complet selon la saison' }
             ];
             renderServices();
         }
@@ -531,7 +780,7 @@
                     serviceItem.classList.add('selected');
                     const qtyInput = document.getElementById(`qty_${serviceId}`);
                     if (qtyInput) {
-                        qtyInput.focus();
+                        setTimeout(() => qtyInput.focus(), 300);
                     }
                 } else {
                     quantityDiv.classList.remove('show');
