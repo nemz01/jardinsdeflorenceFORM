@@ -296,6 +296,14 @@
                     <textarea id="notes" name="notes" placeholder="Informations supplémentaires, contraintes particulières, demandes spéciales..."></textarea>
                 </div>
 
+                <!-- DEBUG: Test Connections -->
+                <button type="button" onclick="testSupabaseConnection()" style="background: #e74c3c; margin-bottom: 10px; padding: 10px; border: none; color: white; border-radius: 5px; width: 48%; margin-right: 4%;">
+                    🔍 TEST SUPABASE
+                </button>
+                <button type="button" onclick="testN8nWebhook()" style="background: #f39c12; margin-bottom: 20px; padding: 10px; border: none; color: white; border-radius: 5px; width: 48%;">
+                    🚀 TEST N8N WEBHOOK
+                </button>
+
                 <button type="submit" class="submit-btn" id="submitBtn">
                     📋 Envoyer ma demande de soumission
                 </button>
@@ -318,10 +326,10 @@
     </div>
 
     <script>
-        // Configuration
-        const SUPABASE_URL = 'https://dfrjllweqpmdtqwofshd.supabase.co'; // Replace with your Supabase URL
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmcmpsbHdlcXBtZHRxd29mc2hkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyMjk3MjQsImV4cCI6MjA2NDgwNTcyNH0.ggtZshpHhIO4gdNaSqW6vELxYBCrLlt2oeiydWL-tyc'; // Replace with your Supabase anon key
-        const N8N_WEBHOOK_URL = 'https://primecallai.app.n8n.cloud/webhook-test/jardins-florence-quote'; // Your n8n webhook URL
+        // Configuration avec vos vraies credentials Supabase
+        const SUPABASE_URL = 'https://dfrjllweqpmdtqwofshd.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmcmpsbHdlcXBtZHRxd29mc2hkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyMjk3MjQsImV4cCI6MjA2NDgwNTcyNH0.ggtZshpHhIO4gdNaSqW6vELxYBCrLlt2oeiydWL-tyc';
+        const N8N_WEBHOOK_URL = 'https://primecallai.app.n8n.cloud/webhook-test/jardins-florence-quote';
 
         let availableServices = [];
 
@@ -332,7 +340,9 @@
             console.log('Key:', SUPABASE_ANON_KEY.substring(0, 20) + '...');
             
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=*&limit=5`, {
+                // Test 1: Check if table exists
+                console.log('📋 Test 1: Checking services_catalogue table...');
+                const response1 = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=*&limit=10`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
@@ -340,19 +350,20 @@
                     }
                 });
                 
-                console.log('Response status:', response.status);
-                console.log('Response headers:', [...response.headers.entries()]);
+                console.log('Response status:', response1.status);
+                console.log('Response headers:', [...response1.headers.entries()]);
                 
-                if (!response.ok) {
-                    const errorText = await response.text();
+                if (!response1.ok) {
+                    const errorText = await response1.text();
                     console.error('❌ Supabase error:', errorText);
-                    alert(`❌ Supabase Error ${response.status}: ${errorText}`);
+                    alert(`❌ Supabase Error ${response1.status}: ${errorText}`);
                     return;
                 }
                 
-                const data = await response.json();
+                const data = await response1.json();
                 console.log('✅ Supabase success:', data);
-                alert(`✅ Connection successful! Found ${data.length} services in database.`);
+                console.log('📊 Table structure:', data.length > 0 ? Object.keys(data[0]) : 'No data');
+                alert(`✅ Connection successful! Found ${data.length} services in database.${data.length === 0 ? '\n\n⚠️ Your table is empty or has no matching records.' : ''}`);
                 
             } catch (error) {
                 console.error('❌ Network error:', error);
@@ -360,16 +371,54 @@
             }
         }
 
+        // DEBUG: Test n8n webhook
+        async function testN8nWebhook() {
+            console.log('🚀 Testing n8n webhook...');
+            console.log('Webhook URL:', N8N_WEBHOOK_URL);
+            
+            const testData = {
+                nom: "Test Client",
+                email: "test@example.com",
+                telephone: "514-555-1234",
+                adresse: "123 Test Street",
+                services: "Test Service,1,unit",
+                notes: "Test webhook connection"
+            };
+            
+            try {
+                console.log('📤 Sending test data:', testData);
+                
+                const response = await fetch(N8N_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                console.log('📡 n8n response status:', response.status);
+                console.log('📡 n8n response headers:', [...response.headers.entries()]);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ n8n webhook error:', errorText);
+                    alert(`❌ n8n Webhook Error ${response.status}: ${errorText}`);
+                    return;
+                }
+                
+                const result = await response.json();
+                console.log('✅ n8n webhook success:', result);
+                alert(`✅ n8n Webhook working! Response: ${JSON.stringify(result, null, 2)}`);
+                
+            } catch (error) {
+                console.error('❌ n8n webhook network error:', error);
+                alert(`❌ n8n Webhook Network Error: ${error.message}\n\nPossible causes:\n- Webhook URL incorrect\n- n8n workflow not active\n- CORS issues`);
+            }
+        }
+
         // Load services from Supabase on page load
         async function loadServices() {
             console.log('🌱 Loading services from Supabase...');
-            
-            // Check if configuration is set
-            if (SUPABASE_URL === 'https://dfrjllweqpmdtqwofshd.supabase.co' || SUPABASE_ANON_KEY === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmcmpsbHdlcXBtZHRxd29mc2hkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyMjk3MjQsImV4cCI6MjA2NDgwNTcyNH0.ggtZshpHhIO4gdNaSqW6vELxYBCrLlt2oeiydWL-tyc') {
-                console.warn('⚠️ Supabase configuration not set, using fallback services');
-                renderFallbackServices();
-                return;
-            }
             
             try {
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,description,prix_unitaire,unite,categorie&is_active=eq.true&order=ordre_affichage`, {
@@ -390,6 +439,7 @@
 
                 availableServices = await response.json();
                 console.log('✅ Loaded services from Supabase:', availableServices.length);
+                console.log('📋 Services data:', availableServices);
                 renderServices();
             } catch (error) {
                 console.error('❌ Error loading services from Supabase:', error);
@@ -403,23 +453,31 @@
             const container = document.getElementById('servicesContainer');
             
             if (availableServices.length === 0) {
+                console.log('⚠️ No services found, using fallback');
                 renderFallbackServices();
                 return;
             }
 
-            container.innerHTML = availableServices.map(service => `
-                <div class="service-item" id="service_item_${service.id}">
-                    <div class="service-header" onclick="toggleServiceByHeader('${service.id}', event)">>
-                        <input type="checkbox" class="service-checkbox" id="service_${service.id}" data-service-id="${service.id}">
-                        <label for="service_${service.id}" class="service-name">${service.nom}</label>
-                        <span class="service-price">${service.prix_unitaire}$ / ${service.unite}</span>
+            console.log('🎨 Rendering', availableServices.length, 'services from Supabase');
+
+            let servicesHTML = '';
+            availableServices.forEach(service => {
+                servicesHTML += `
+                    <div class="service-item" id="service_item_${service.id}">
+                        <div class="service-header" onclick="toggleServiceByHeader('${service.id}', event)">
+                            <input type="checkbox" class="service-checkbox" id="service_${service.id}" data-service-id="${service.id}">
+                            <label for="service_${service.id}" class="service-name">${service.nom}</label>
+                            <span class="service-price">${service.prix_unitaire}$ / ${service.unite}</span>
+                        </div>
+                        ${service.description ? `<div class="service-description">${service.description}</div>` : ''}
+                        <div class="quantity-input" id="quantity_${service.id}">
+                            <input type="number" placeholder="Quantité (${service.unite})" min="1" step="0.1" id="qty_${service.id}">
+                        </div>
                     </div>
-                    ${service.description ? `<div class="service-description">${service.description}</div>` : ''}
-                    <div class="quantity-input" id="quantity_${service.id}">
-                        <input type="number" placeholder="Quantité (${service.unite})" min="1" step="0.1" id="qty_${service.id}">
-                    </div>
-                </div>
-            `).join('');
+                `;
+            });
+            
+            container.innerHTML = servicesHTML;
 
             // Add event listeners to checkboxes
             availableServices.forEach(service => {
@@ -430,10 +488,13 @@
                     });
                 }
             });
+
+            console.log('✅ Services rendered successfully!');
         }
 
         // Fallback services if Supabase fails
         function renderFallbackServices() {
+            console.log('🔄 Using fallback services');
             availableServices = [
                 { id: '1', nom: 'Tonte de pelouse', prix_unitaire: 29, unite: 'm²', description: 'Tonte régulière avec ramassage' },
                 { id: '2', nom: 'Taille de haies', prix_unitaire: 85, unite: 'heure', description: 'Taille professionnelle et nettoyage' },
@@ -443,9 +504,6 @@
             ];
             renderServices();
         }
-
-        // Remove the old toggle function
-        // Toggle service selection - REMOVED
 
         // Toggle service by clicking on header
         function toggleServiceByHeader(serviceId, event) {
@@ -490,6 +548,8 @@
         document.getElementById('quoteForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            console.log('📝 Starting form submission...');
+            
             const submitBtn = document.getElementById('submitBtn');
             const successMsg = document.getElementById('successMessage');
             const errorMsg = document.getElementById('errorMessage');
@@ -506,6 +566,7 @@
                 // Collect form data
                 const formData = new FormData(e.target);
                 const data = Object.fromEntries(formData);
+                console.log('📋 Form data collected:', data);
                 
                 // Collect selected services
                 const selectedServices = [];
@@ -513,10 +574,14 @@
                     const checkbox = document.getElementById(`service_${service.id}`);
                     const qtyInput = document.getElementById(`qty_${service.id}`);
                     
-                    if (checkbox.checked && qtyInput.value) {
-                        selectedServices.push(`${service.nom},${qtyInput.value},${service.unite}`);
+                    if (checkbox && checkbox.checked && qtyInput && qtyInput.value) {
+                        const serviceEntry = `${service.nom},${qtyInput.value},${service.unite}`;
+                        selectedServices.push(serviceEntry);
+                        console.log(`✅ Selected service: ${serviceEntry}`);
                     }
                 });
+                
+                console.log('🛍️ Total selected services:', selectedServices.length);
                 
                 if (selectedServices.length === 0) {
                     throw new Error('Veuillez sélectionner au moins un service avec une quantité.');
@@ -524,6 +589,11 @@
                 
                 // Format services string
                 data.services = selectedServices.join(';');
+                console.log('🔗 Services string:', data.services);
+                
+                // Final data to send
+                console.log('📤 Final data to send:', data);
+                console.log('🚀 Sending to webhook:', N8N_WEBHOOK_URL);
                 
                 // Send to n8n webhook
                 const response = await fetch(N8N_WEBHOOK_URL, {
@@ -534,12 +604,17 @@
                     body: JSON.stringify(data)
                 });
                 
+                console.log('📡 Response status:', response.status);
+                console.log('📡 Response headers:', [...response.headers.entries()]);
+                
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Erreur lors de l\'envoi');
+                    const errorText = await response.text();
+                    console.error('❌ Webhook error response:', errorText);
+                    throw new Error(errorText || `HTTP Error ${response.status}`);
                 }
                 
                 const result = await response.json();
+                console.log('✅ Success response:', result);
                 
                 // Show success message
                 successMsg.style.display = 'block';
@@ -549,7 +624,7 @@
                 successMsg.scrollIntoView({ behavior: 'smooth' });
                 
             } catch (error) {
-                console.error('Form submission error:', error);
+                console.error('❌ Form submission error:', error);
                 document.getElementById('errorText').textContent = error.message;
                 errorMsg.style.display = 'block';
                 errorMsg.scrollIntoView({ behavior: 'smooth' });
