@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jardins de Florence - Nouvelle Soumission</title>
+    <title>Demande de Soumission - Jardins de Florence</title>
     <style>
         * {
             margin: 0;
@@ -13,267 +13,198 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
         }
 
         .header {
-            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
             color: white;
-            padding: 25px;
+            padding: 40px;
             text-align: center;
         }
 
         .header h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
         }
 
         .header p {
+            font-size: 1.2em;
             opacity: 0.9;
-            font-size: 16px;
         }
 
-        .form-section {
-            padding: 25px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #1B5E20;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .form-container {
+            padding: 40px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-weight: 600;
             color: #333;
+            font-size: 1.1em;
+        }
+
+        .required {
+            color: #e74c3c;
+            margin-left: 3px;
         }
 
         .form-group input,
-        .form-group select,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
         }
 
         .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+        .form-group textarea:focus,
+        .form-group select:focus {
             outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            border-color: #2c5530;
+            box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.1);
         }
 
-        .form-row {
-            display: flex;
-            gap: 15px;
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
         }
 
-        .form-row .form-group {
-            flex: 1;
+        .services-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .services-section h3 {
+            color: #2c5530;
+            margin-bottom: 20px;
+            font-size: 1.4em;
         }
 
         .service-item {
-            border: 2px solid #e0e0e0;
+            background: white;
+            padding: 20px;
             border-radius: 10px;
-            padding: 15px;
             margin-bottom: 15px;
-            background: #fafafa;
-            transition: border-color 0.3s;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .service-item:hover {
+            border-color: #2c5530;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .service-item.selected {
-            border-color: #4CAF50;
-            background: #f1f8e9;
+            border-color: #2c5530;
+            background: #f0f7f1;
         }
 
         .service-header {
             display: flex;
             align-items: center;
-            gap: 10px;
             margin-bottom: 10px;
         }
 
         .service-checkbox {
-            width: 20px;
-            height: 20px;
-        }
-
-        .service-info {
-            flex: 1;
+            margin-right: 15px;
+            transform: scale(1.2);
         }
 
         .service-name {
-            font-weight: bold;
-            color: #1B5E20;
-        }
-
-        .service-description {
-            font-size: 14px;
-            color: #666;
-            margin-top: 2px;
+            font-weight: 600;
+            color: #2c5530;
+            flex-grow: 1;
         }
 
         .service-price {
-            font-weight: bold;
-            color: #2E7D32;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .service-description {
+            color: #777;
+            font-size: 0.9em;
+            margin-left: 35px;
+            margin-bottom: 15px;
         }
 
         .quantity-input {
+            margin-left: 35px;
             display: none;
-            margin-top: 10px;
         }
 
         .quantity-input.show {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            display: block;
         }
 
         .quantity-input input {
-            width: 80px;
-            margin: 0;
-        }
-
-        .add-service-btn {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
             margin-top: 10px;
         }
 
-        .add-service-btn:hover {
-            background: #45a049;
-        }
-
-        .summary {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-
-        .summary-row.total {
-            border-top: 2px solid #ddd;
-            padding-top: 10px;
-            font-weight: bold;
-            font-size: 18px;
-            color: #1B5E20;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: #4CAF50;
+        .submit-btn {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
             color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 30px;
         }
 
-        .btn-primary:hover {
-            background: #45a049;
+        .submit-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(44, 85, 48, 0.3);
         }
 
-        .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
-        }
-
-        .btn-secondary:hover {
-            background: #e0e0e0;
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .loading {
             display: none;
             text-align: center;
             padding: 20px;
-        }
-
-        .loading.show {
-            display: block;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #4CAF50;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
-                gap: 0;
-            }
-            
-            .btn-group {
-                flex-direction: column;
-            }
+            color: #666;
         }
 
         .success-message {
             display: none;
             background: #d4edda;
             color: #155724;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 20px;
+            border-radius: 10px;
             margin-top: 20px;
             text-align: center;
         }
@@ -282,432 +213,268 @@
             display: none;
             background: #f8d7da;
             color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 20px;
+            border-radius: 10px;
             margin-top: 20px;
             text-align: center;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🌿 JARDINS DE FLORENCE</h1>
-            <p>Nouvelle Soumission Mobile</p>
+            <h1>🌿 Jardins de Florence</h1>
+            <p>Demande de soumission personnalisée</p>
         </div>
 
-        <form id="soumissionForm">
-            <!-- Informations Client -->
-            <div class="form-section">
-                <div class="section-title">
-                    👤 INFORMATIONS CLIENT
-                </div>
-                
+        <div class="form-container">
+            <form id="quoteForm">
                 <div class="form-group">
-                    <label for="clientName">Nom complet *</label>
-                    <input type="text" id="clientName" name="clientName" required>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="clientPhone">Téléphone *</label>
-                        <input type="tel" id="clientPhone" name="clientPhone" required placeholder="514-555-1234">
-                    </div>
-                    <div class="form-group">
-                        <label for="clientEmail">Email</label>
-                        <input type="email" id="clientEmail" name="clientEmail" placeholder="client@email.com">
-                    </div>
+                    <label for="nom">Nom complet <span class="required">*</span></label>
+                    <input type="text" id="nom" name="nom" required placeholder="Votre nom complet">
                 </div>
 
                 <div class="form-group">
-                    <label for="projectAddress">Adresse du projet *</label>
-                    <input type="text" id="projectAddress" name="projectAddress" required placeholder="123 Rue de la Paix, Montréal QC">
-                </div>
-            </div>
-
-            <!-- Services Demandés -->
-            <div class="form-section">
-                <div class="section-title">
-                    🌿 SERVICES DEMANDÉS
-                </div>
-                
-                <div id="servicesList">
-                    <!-- Services will be loaded dynamically -->
+                    <label for="email">Adresse courriel <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required placeholder="votre@email.com">
                 </div>
 
-                <button type="button" class="add-service-btn" onclick="addCustomService()">
-                    + Ajouter service personnalisé
+                <div class="form-group">
+                    <label for="telephone">Téléphone</label>
+                    <input type="tel" id="telephone" name="telephone" placeholder="(514) 555-1234">
+                </div>
+
+                <div class="form-group">
+                    <label for="adresse">Adresse du projet</label>
+                    <textarea id="adresse" name="adresse" placeholder="Adresse complète où les services seront réalisés"></textarea>
+                </div>
+
+                <div class="services-section">
+                    <h3>Services demandés <span class="required">*</span></h3>
+                    <div id="servicesContainer">
+                        <div class="loading">🌱 Chargement des services disponibles...</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Notes additionnelles</label>
+                    <textarea id="notes" name="notes" placeholder="Informations supplémentaires, contraintes particulières, demandes spéciales..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    📋 Envoyer ma demande de soumission
                 </button>
-            </div>
+            </form>
 
-            <!-- Notes Spéciales -->
-            <div class="form-section">
-                <div class="section-title">
-                    📝 NOTES SPÉCIALES
-                </div>
-                
-                <div class="form-group">
-                    <label for="specialNotes">Commentaires additionnels</label>
-                    <textarea id="specialNotes" name="specialNotes" rows="3" placeholder="Détails spéciaux, conditions particulières, etc."></textarea>
-                </div>
-            </div>
-
-            <!-- Aperçu des Coûts -->
-            <div class="form-section">
-                <div class="section-title">
-                    💰 APERÇU ESTIMÉ
-                </div>
-                
-                <div class="summary">
-                    <div class="summary-row">
-                        <span>Sous-total:</span>
-                        <span id="subtotal">0,00 $</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Taxes (TPS+TVQ 14,98%):</span>
-                        <span id="taxes">0,00 $</span>
-                    </div>
-                    <div class="summary-row total">
-                        <span>TOTAL:</span>
-                        <span id="total">0,00 $</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Boutons -->
-            <div class="form-section">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
-                        Annuler
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        ✅ Créer Soumission
-                    </button>
-                </div>
-            </div>
-
-            <!-- Loading -->
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p>Création de la soumission en cours...</p>
-            </div>
-
-            <!-- Messages -->
             <div class="success-message" id="successMessage">
-                ✅ Soumission créée avec succès!
+                <h3>✅ Demande envoyée avec succès!</h3>
+                <p>Votre demande de soumission a été transmise. Nous vous contacterons sous 24-48 heures avec votre devis personnalisé.</p>
             </div>
+
             <div class="error-message" id="errorMessage">
-                ❌ Erreur lors de la création. Veuillez réessayer.
+                <h3>❌ Erreur lors de l'envoi</h3>
+                <p id="errorText">Une erreur s'est produite. Veuillez réessayer ou nous contacter directement.</p>
             </div>
-        </form>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 Jardins de Florence - Services d'aménagement paysager professionnel</p>
+        </div>
     </div>
 
     <script>
         // Configuration
-        const WEBHOOK_URL = 'https://primecallai.app.n8n.cloud/webhook-test/jardins-florence-soumission';
-        const TAX_RATE = 0.1498; // 14.98% TPS+TVQ Québec
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE'; // Replace with your Supabase URL
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; // Replace with your Supabase anon key
+        const N8N_WEBHOOK_URL = 'https://primecallai.app.n8n.cloud/webhook-test/jardins-florence-quote'; // Your n8n webhook URL
 
-        // Services catalogue (sera chargé depuis Supabase via API)
-        let servicesCatalogue = [
-            {
-                id: '1',
-                nom: 'Tonte de haies/arbustes',
-                description: 'Taille professionnelle de haies et arbustes',
-                categorie: 'horticole',
-                prix_unitaire: 85,
-                unite: 'heure',
-                icone: '✂️'
-            },
-            {
-                id: '2',
-                nom: 'Ouverture du terrain (printemps)',
-                description: 'Préparation terrain pour la saison',
-                categorie: 'horticole',
-                prix_unitaire: 275,
-                unite: 'unité',
-                icone: '🌱'
-            },
-            {
-                id: '3',
-                nom: 'Murets de soutènement',
-                description: 'Installation murets pierre ou bloc',
-                categorie: 'amenagement',
-                prix_unitaire: 1000,
-                unite: 'm',
-                icone: '🧱'
-            },
-            {
-                id: '4',
-                nom: 'Gazon synthétique',
-                description: 'Installation gazon artificiel',
-                categorie: 'amenagement',
-                prix_unitaire: 65,
-                unite: 'm²',
-                icone: '🌿'
-            },
-            {
-                id: '5',
-                nom: 'Éclairage paysager',
-                description: 'Installation système éclairage extérieur',
-                categorie: 'amenagement',
-                prix_unitaire: 300,
-                unite: 'point',
-                icone: '💡'
+        let availableServices = [];
+
+        // Load services from Supabase on page load
+        async function loadServices() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,description,prix_unitaire,unite,categorie&is_active=eq.true&order=ordre_affichage`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to load services');
+                }
+
+                availableServices = await response.json();
+                renderServices();
+            } catch (error) {
+                console.error('Error loading services:', error);
+                renderFallbackServices();
             }
-        ];
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            loadServices();
-            setupEventListeners();
-        });
-
-        function loadServices() {
-            const servicesList = document.getElementById('servicesList');
-            servicesList.innerHTML = '';
-
-            servicesCatalogue.forEach(service => {
-                const serviceItem = createServiceItem(service);
-                servicesList.appendChild(serviceItem);
-            });
         }
 
-        function createServiceItem(service) {
-            const div = document.createElement('div');
-            div.className = 'service-item';
-            div.innerHTML = `
-                <div class="service-header">
-                    <input type="checkbox" class="service-checkbox" data-service-id="${service.id}" 
-                           onchange="toggleService(this, '${service.id}')">
-                    <div class="service-info">
-                        <div class="service-name">${service.icone} ${service.nom}</div>
-                        <div class="service-description">${service.description}</div>
+        // Render services in the form
+        function renderServices() {
+            const container = document.getElementById('servicesContainer');
+            
+            if (availableServices.length === 0) {
+                renderFallbackServices();
+                return;
+            }
+
+            container.innerHTML = availableServices.map(service => `
+                <div class="service-item" onclick="toggleService('${service.id}')">
+                    <div class="service-header">
+                        <input type="checkbox" class="service-checkbox" id="service_${service.id}" onchange="handleServiceToggle('${service.id}')">
+                        <span class="service-name">${service.nom}</span>
+                        <span class="service-price">${service.prix_unitaire}$ / ${service.unite}</span>
                     </div>
-                    <div class="service-price">${service.prix_unitaire}$ / ${service.unite}</div>
+                    ${service.description ? `<div class="service-description">${service.description}</div>` : ''}
+                    <div class="quantity-input" id="quantity_${service.id}">
+                        <input type="number" placeholder="Quantité (${service.unite})" min="1" step="0.1" id="qty_${service.id}">
+                    </div>
                 </div>
-                <div class="quantity-input" id="quantity-${service.id}">
-                    <label>Quantité:</label>
-                    <input type="number" min="1" value="1" step="0.1" 
-                           onchange="updateCalculations()" data-service-id="${service.id}">
-                    <span>${service.unite}</span>
-                </div>
-            `;
-            return div;
+            `).join('');
         }
 
-        function toggleService(checkbox, serviceId) {
+        // Fallback services if Supabase fails
+        function renderFallbackServices() {
+            availableServices = [
+                { id: '1', nom: 'Tonte de pelouse', prix_unitaire: 29, unite: 'm²', description: 'Tonte régulière avec ramassage' },
+                { id: '2', nom: 'Taille de haies', prix_unitaire: 85, unite: 'heure', description: 'Taille professionnelle et nettoyage' },
+                { id: '3', nom: 'Déneigement', prix_unitaire: 355, unite: 'forfait', description: 'Service de déneigement saisonnier' },
+                { id: '4', nom: 'Aménagement paysager', prix_unitaire: 120, unite: 'heure', description: 'Conception et réalisation d\'aménagements' },
+                { id: '5', nom: 'Entretien saisonnier', prix_unitaire: 300, unite: 'saison', description: 'Entretien complet selon la saison' }
+            ];
+            renderServices();
+        }
+
+        // Toggle service selection
+        function toggleService(serviceId) {
+            const checkbox = document.getElementById(`service_${serviceId}`);
+            checkbox.checked = !checkbox.checked;
+            handleServiceToggle(serviceId);
+        }
+
+        // Handle service toggle
+        function handleServiceToggle(serviceId) {
+            const checkbox = document.getElementById(`service_${serviceId}`);
+            const quantityDiv = document.getElementById(`quantity_${serviceId}`);
             const serviceItem = checkbox.closest('.service-item');
-            const quantityInput = document.getElementById(`quantity-${serviceId}`);
             
             if (checkbox.checked) {
+                quantityDiv.classList.add('show');
                 serviceItem.classList.add('selected');
-                quantityInput.classList.add('show');
+                document.getElementById(`qty_${serviceId}`).focus();
             } else {
+                quantityDiv.classList.remove('show');
                 serviceItem.classList.remove('selected');
-                quantityInput.classList.remove('show');
+                document.getElementById(`qty_${serviceId}`).value = '';
             }
-            
-            updateCalculations();
         }
 
-        function updateCalculations() {
-            let subtotal = 0;
-            
-            document.querySelectorAll('.service-checkbox:checked').forEach(checkbox => {
-                const serviceId = checkbox.dataset.serviceId;
-                const service = servicesCatalogue.find(s => s.id === serviceId);
-                const quantityInput = document.querySelector(`input[data-service-id="${serviceId}"]`);
-                const quantity = parseFloat(quantityInput.value) || 0;
-                
-                subtotal += service.prix_unitaire * quantity;
-            });
-            
-            const taxes = subtotal * TAX_RATE;
-            const total = subtotal + taxes;
-            
-            document.getElementById('subtotal').textContent = formatCurrency(subtotal);
-            document.getElementById('taxes').textContent = formatCurrency(taxes);
-            document.getElementById('total').textContent = formatCurrency(total);
-        }
-
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('fr-CA', {
-                style: 'currency',
-                currency: 'CAD'
-            }).format(amount);
-        }
-
-        function addCustomService() {
-            const serviceName = prompt('Nom du service personnalisé:');
-            if (!serviceName) return;
-            
-            const price = parseFloat(prompt('Prix unitaire ($):'));
-            if (!price || price <= 0) return;
-            
-            const unit = prompt('Unité (ex: m², heure, unité):') || 'unité';
-            
-            const customService = {
-                id: 'custom-' + Date.now(),
-                nom: serviceName,
-                description: 'Service personnalisé',
-                categorie: 'personnalise',
-                prix_unitaire: price,
-                unite: unit,
-                icone: '⚙️'
-            };
-            
-            servicesCatalogue.push(customService);
-            
-            const servicesList = document.getElementById('servicesList');
-            const serviceItem = createServiceItem(customService);
-            servicesList.appendChild(serviceItem);
-        }
-
-        function setupEventListeners() {
-            document.getElementById('soumissionForm').addEventListener('submit', handleSubmit);
-        }
-
-        async function handleSubmit(e) {
+        // Form submission
+        document.getElementById('quoteForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Validation
-            if (!validateForm()) return;
+            const submitBtn = document.getElementById('submitBtn');
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
             
-            // Show loading
-            document.getElementById('loading').classList.add('show');
+            // Hide previous messages
+            successMsg.style.display = 'none';
+            errorMsg.style.display = 'none';
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = '📤 Envoi en cours...';
             
             try {
-                const formData = collectFormData();
+                // Collect form data
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData);
                 
-                const response = await fetch(WEBHOOK_URL, {
+                // Collect selected services
+                const selectedServices = [];
+                availableServices.forEach(service => {
+                    const checkbox = document.getElementById(`service_${service.id}`);
+                    const qtyInput = document.getElementById(`qty_${service.id}`);
+                    
+                    if (checkbox.checked && qtyInput.value) {
+                        selectedServices.push(`${service.nom},${qtyInput.value},${service.unite}`);
+                    }
+                });
+                
+                if (selectedServices.length === 0) {
+                    throw new Error('Veuillez sélectionner au moins un service avec une quantité.');
+                }
+                
+                // Format services string
+                data.services = selectedServices.join(';');
+                
+                // Send to n8n webhook
+                const response = await fetch(N8N_WEBHOOK_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify(data)
                 });
                 
-                if (response.ok) {
-                    showSuccess();
-                    setTimeout(() => {
-                        resetForm();
-                    }, 3000);
-                } else {
-                    throw new Error('Erreur serveur');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Erreur lors de l\'envoi');
                 }
+                
+                const result = await response.json();
+                
+                // Show success message
+                successMsg.style.display = 'block';
+                document.getElementById('quoteForm').style.display = 'none';
+                
+                // Scroll to success message
+                successMsg.scrollIntoView({ behavior: 'smooth' });
                 
             } catch (error) {
-                console.error('Erreur:', error);
-                showError();
+                console.error('Form submission error:', error);
+                document.getElementById('errorText').textContent = error.message;
+                errorMsg.style.display = 'block';
+                errorMsg.scrollIntoView({ behavior: 'smooth' });
             } finally {
-                document.getElementById('loading').classList.remove('show');
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📋 Envoyer ma demande de soumission';
             }
-        }
+        });
 
-        function validateForm() {
-            const required = ['clientName', 'clientPhone', 'projectAddress'];
-            
-            for (let field of required) {
-                const input = document.getElementById(field);
-                if (!input.value.trim()) {
-                    alert(`Veuillez remplir le champ: ${input.previousElementSibling.textContent}`);
-                    input.focus();
-                    return false;
-                }
-            }
-            
-            // Vérifier qu'au moins un service est sélectionné
-            const selectedServices = document.querySelectorAll('.service-checkbox:checked');
-            if (selectedServices.length === 0) {
-                alert('Veuillez sélectionner au moins un service.');
-                return false;
-            }
-            
-            return true;
-        }
-
-        function collectFormData() {
-            const selectedServices = [];
-            
-            document.querySelectorAll('.service-checkbox:checked').forEach(checkbox => {
-                const serviceId = checkbox.dataset.serviceId;
-                const service = servicesCatalogue.find(s => s.id === serviceId);
-                const quantityInput = document.querySelector(`input[data-service-id="${serviceId}"]`);
-                const quantity = parseFloat(quantityInput.value) || 1;
-                
-                selectedServices.push({
-                    service_id: service.id,
-                    nom_service: service.nom,
-                    description: service.description,
-                    quantite: quantity,
-                    unite: service.unite,
-                    prix_unitaire: service.prix_unitaire,
-                    prix_total: service.prix_unitaire * quantity,
-                    categorie: service.categorie
-                });
-            });
-            
-            const subtotal = selectedServices.reduce((sum, s) => sum + s.prix_total, 0);
-            const taxes = subtotal * TAX_RATE;
-            const total = subtotal + taxes;
-            
-            return {
-                client: {
-                    name: document.getElementById('clientName').value.trim(),
-                    phone: document.getElementById('clientPhone').value.trim(),
-                    email: document.getElementById('clientEmail').value.trim(),
-                    address: document.getElementById('projectAddress').value.trim(),
-                    status: 'actif'
-                },
-                soumission: {
-                    numero: generateQuoteNumber(),
-                    titre: `Soumission ${document.getElementById('clientName').value.trim()}`,
-                    statut: 'brouillon',
-                    sous_total: subtotal,
-                    montant_taxe: taxes,
-                    total: total,
-                    taux_taxe: TAX_RATE,
-                    valide_jusqu: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-                    notes: document.getElementById('specialNotes').value.trim()
-                },
-                services: selectedServices,
-                metadata: {
-                    created_by: 'mobile_form',
-                    created_at: new Date().toISOString(),
-                    device_info: navigator.userAgent
-                }
-            };
-        }
-
-        function generateQuoteNumber() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const timestamp = now.getTime().toString().slice(-6);
-            return `JDF-${year}-${timestamp}`;
-        }
-
-        function showSuccess() {
-            document.getElementById('successMessage').style.display = 'block';
-            document.getElementById('errorMessage').style.display = 'none';
-        }
-
-        function showError() {
-            document.getElementById('errorMessage').style.display = 'block';
-            document.getElementById('successMessage').style.display = 'none';
-        }
-
-        function resetForm() {
-            document.getElementById('soumissionForm').reset();
-            document.querySelectorAll('.service-item').forEach(item => {
-                item.classList.remove('selected');
-            });
-            document.querySelectorAll('.quantity-input').forEach(input => {
-                input.classList.remove('show');
-            });
-            updateCalculations();
-            document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('errorMessage').style.display = 'none';
-        }
+        // Load services when page loads
+        document.addEventListener('DOMContentLoaded', loadServices);
     </script>
 </body>
 </html>
