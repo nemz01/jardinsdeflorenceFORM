@@ -9,126 +9,6 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        // Quick fix function to reload services
-        async function quickFixSupabase() {
-            console.log('🔧 Quick fix: Attempting to reload services...');
-            
-            // Show loading in services container
-            const container = document.getElementById('servicesContainer');
-            container.innerHTML = '<div class="loading">🔄 Rechargement des services...</div>';
-            
-            try {
-                // Try multiple approaches
-                const approaches = [
-                    // Approach 1: All columns, no filters
-                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue`, name: 'All columns' },
-                    // Approach 2: Only essential columns
-                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,prix_unitaire,unite`, name: 'Essential columns' },
-                    // Approach 3: With RLS bypass attempt (if user has elevated permissions)
-                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue?select=*`, name: 'RLS bypass attempt', headers: { 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
-                ];
-                
-                for (const approach of approaches) {
-                    console.log(`🔧 Trying: ${approach.name}...`);
-                    
-                    const response = await fetch(approach.url, {
-                        headers: {
-                            'apikey': SUPABASE_ANON_KEY,
-                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                            'Content-Type': 'application/json',
-                            ...(approach.headers || {})
-                        // Quick fix function to reload services
-        async function quickFixSupabase() {
-            console.log('🔧 Quick fix: Attempting to reload services...');
-            
-            // Show loading in services container
-            const container = document.getElementById('servicesContainer');
-            container.innerHTML = '<div class="loading">🔄 Rechargement des services...</div>';
-            
-            try {
-                // Try multiple approaches
-                const approaches = [
-                    // Approach 1: All columns, no filters
-                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue`, name: 'All columns' },
-                    // Approach 2: Only essential columns
-                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,prix_unitaire,unite`, name: 'Essential columns' },
-                    // Approach 3: With RLS bypass attempt (if user has elevated permissions)
-                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue?select=*`, name: 'RLS bypass attempt', headers: { 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
-                ];
-                
-                for (const approach of approaches) {
-                    console.log(`🔧 Trying: ${approach.name}...`);
-                    
-                    const response = await fetch(approach.url, {
-                        headers: {
-                            'apikey': SUPABASE_ANON_KEY,
-                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                            'Content-Type': 'application/json',
-                            ...(approach.headers || {})
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log(`✅ ${approach.name} success:`, data.length, 'services');
-                        
-                        if (data.length > 0) {
-                            availableServices = data.map(service => ({
-                                id: service.id,
-                                nom: service.nom || service.name || 'Service sans nom',
-                                description: service.description || '',
-                                prix_unitaire: service.prix_unitaire || service.price || 0,
-                                unite: service.unite || service.unit || 'unité',
-                                categorie: service.categorie || service.category || ''
-                            }));
-                            
-                            renderServices();
-                            alert(`✅ Services rechargés avec succès!\n\n${data.length} services trouvés avec l'approche: ${approach.name}`);
-                            return;
-                        }
-                    }
-                }
-                
-                // If all approaches fail
-                throw new Error('Toutes les approches ont échoué');
-                
-            } catch (error) {
-                console.error('❌ Quick fix failed:', error);
-                renderFallbackServices();
-                alert(`❌ Impossible de charger les services depuis Supabase.\n\nUtilisation des services de démonstration.\n\nProblème possible:\n- RLS (Row Level Security) bloque l'accès\n- Table vide\n- Permissions insuffisantes\n\nVeuillez vérifier votre configuration Supabase.`);
-            }
-        }
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log(`✅ ${approach.name} success:`, data.length, 'services');
-                        
-                        if (data.length > 0) {
-                            availableServices = data.map(service => ({
-                                id: service.id,
-                                nom: service.nom || service.name || 'Service sans nom',
-                                description: service.description || '',
-                                prix_unitaire: service.prix_unitaire || service.price || 0,
-                                unite: service.unite || service.unit || 'unité',
-                                categorie: service.categorie || service.category || ''
-                            }));
-                            
-                            renderServices();
-                            alert(`✅ Services rechargés avec succès!\n\n${data.length} services trouvés avec l'approche: ${approach.name}`);
-                            return;
-                        }
-                    }
-                }
-                
-                // If all approaches fail
-                throw new Error('Toutes les approches ont échoué');
-                
-            } catch (error) {
-                console.error('❌ Quick fix failed:', error);
-                renderFallbackServices();
-                alert(`❌ Impossible de charger les services depuis Supabase.\n\nUtilisation des services de démonstration.\n\nProblème possible:\n- RLS (Row Level Security) bloque l'accès\n- Table vide\n- Permissions insuffisantes\n\nVeuillez vérifier votre configuration Supabase.`);
-            }
         }
 
         body {
@@ -245,7 +125,8 @@
         }
 
         .form-group input,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
             padding: 16px 20px;
             border: 2px solid #e5e7eb;
@@ -257,7 +138,8 @@
         }
 
         .form-group input:focus,
-        .form-group textarea:focus {
+        .form-group textarea:focus,
+        .form-group select:focus {
             outline: none;
             border-color: #10b981;
             box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
@@ -305,119 +187,126 @@
             gap: 12px;
         }
 
-        .service-item {
-            background: white;
+        .service-selector {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 16px;
+            align-items: end;
+            margin-bottom: 25px;
             padding: 24px;
+            background: white;
             border-radius: 16px;
-            margin-bottom: 16px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            position: relative;
-            overflow: hidden;
         }
 
-        .service-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
+        .service-dropdown select {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-color: #10b981;
+        }
+
+        .quantity-input input {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-color: #10b981;
+            text-align: center;
+        }
+
+        .add-service-btn {
             background: linear-gradient(135deg, #10b981, #059669);
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
+            color: white;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            height: fit-content;
+        }
+
+        .add-service-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .add-service-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .selected-services {
+            margin-top: 30px;
+        }
+
+        .selected-services h4 {
+            color: #064e3b;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .service-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 2px solid #bbf7d0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
         }
 
         .service-item:hover {
             border-color: #10b981;
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(16, 185, 129, 0.15);
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.1);
         }
 
-        .service-item:hover::before {
-            transform: scaleY(1);
-        }
-
-        .service-item.selected {
-            border-color: #10b981;
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
-        }
-
-        .service-item.selected::before {
-            transform: scaleY(1);
-        }
-
-        .service-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-            cursor: pointer;
-        }
-
-        .service-checkbox {
-            margin-right: 16px;
-            transform: scale(1.3);
-            cursor: pointer;
-            accent-color: #10b981;
+        .service-info {
+            flex-grow: 1;
         }
 
         .service-name {
             font-weight: 600;
             color: #064e3b;
-            flex-grow: 1;
-            cursor: pointer;
-            padding: 8px 0;
-            font-size: 1.1em;
+            margin-bottom: 4px;
         }
 
-        .service-name:hover {
-            color: #047857;
+        .service-details {
+            color: #6b7280;
+            font-size: 0.9em;
         }
 
         .service-price {
             color: #059669;
             font-weight: 600;
             font-size: 1.1em;
-            background: rgba(16, 185, 129, 0.1);
-            padding: 6px 12px;
+            margin: 0 20px;
+        }
+
+        .remove-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 12px;
             border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
         }
 
-        .service-description {
+        .remove-btn:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+
+        .empty-services {
+            text-align: center;
             color: #6b7280;
-            font-size: 0.95em;
-            margin-left: 40px;
-            margin-bottom: 16px;
             font-style: italic;
-        }
-
-        .quantity-input {
-            margin-left: 40px;
-            display: none;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .quantity-input.show {
-            display: block;
-        }
-
-        .quantity-input input {
-            margin-top: 12px;
-            border-color: #10b981;
-            background: #f0fdf4;
+            padding: 30px;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
         }
 
         .submit-btn, .test-btn {
@@ -486,31 +375,6 @@
             background: linear-gradient(135deg, #d97706, #f59e0b);
         }
 
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 40px;
-            color: #059669;
-            font-size: 1.1em;
-        }
-
-        .loading::before {
-            content: '';
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #bbf7d0;
-            border-top: 3px solid #10b981;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         .success-message, .error-message {
             display: none;
             padding: 30px;
@@ -559,12 +423,27 @@
                 font-size: 2.2em;
             }
 
+            .service-selector {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
             .test-buttons {
                 flex-direction: column;
             }
 
             .test-btn {
                 width: 100%;
+            }
+
+            .service-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .service-price {
+                margin: 0;
             }
         }
     </style>
@@ -613,8 +492,32 @@
                         <span class="icon">🛠️</span>
                         Services demandés <span class="required">*</span>
                     </h3>
-                    <div id="servicesContainer">
-                        <div class="loading">Chargement des services disponibles...</div>
+
+                    <!-- Service Selector -->
+                    <div class="service-selector">
+                        <div class="service-dropdown">
+                            <label for="serviceSelect">Choisir un service</label>
+                            <select id="serviceSelect">
+                                <option value="">Sélectionnez un service...</option>
+                            </select>
+                        </div>
+                        <div class="quantity-input">
+                            <label for="quantityInput">Quantité</label>
+                            <input type="number" id="quantityInput" min="0.1" step="0.1" placeholder="0">
+                        </div>
+                        <button type="button" class="add-service-btn" id="addServiceBtn" disabled>
+                            ➕ Ajouter
+                        </button>
+                    </div>
+
+                    <!-- Selected Services List -->
+                    <div class="selected-services">
+                        <h4>Services sélectionnés:</h4>
+                        <div id="selectedServicesList">
+                            <div class="empty-services">
+                                Aucun service sélectionné
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -639,11 +542,6 @@
                         🚀 Test n8n Webhook
                     </button>
                 </div>
-                
-                <!-- Quick Fix Button if Supabase issues -->
-                <button type="button" onclick="quickFixSupabase()" style="background: #7c3aed; color: white; padding: 12px 20px; border: none; border-radius: 8px; width: 100%; margin-bottom: 20px; font-size: 0.9em;">
-                    🔧 Quick Fix: Reload Services
-                </button>
 
                 <button type="submit" class="submit-btn" id="submitBtn">
                     📋 Envoyer ma demande de soumission
@@ -673,201 +571,42 @@
         const N8N_WEBHOOK_URL = 'https://primecallai.app.n8n.cloud/webhook-test/jardins-florence-quote';
 
         let availableServices = [];
+        let selectedServices = [];
 
-        // DEBUG: Test Supabase connection
-        async function testSupabaseConnection() {
-            console.log('🔍 Testing Supabase connection...');
-            console.log('URL:', SUPABASE_URL);
-            console.log('Key:', SUPABASE_ANON_KEY.substring(0, 20) + '...');
-            
-            try {
-                // Test 1: Basic query without specific columns
-                console.log('📋 Test 1: Basic query all columns...');
-                const response1 = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue`, {
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                console.log('Response status:', response1.status);
-                
-                if (!response1.ok) {
-                    const errorText = await response1.text();
-                    console.error('❌ Supabase error:', errorText);
-                    alert(`❌ Supabase Error ${response1.status}: ${errorText}`);
-                    return;
-                }
-                
-                const data1 = await response1.json();
-                console.log('✅ All columns query:', data1.length, 'services found');
-                
-                if (data1.length > 0) {
-                    console.log('📊 Available columns:', Object.keys(data1[0]));
-                    console.log('📊 Sample service:', data1[0]);
-                }
-                
-                // Test 2: Count total rows
-                console.log('📋 Test 2: Count total rows...');
-                const response2 = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=count`, {
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'count=exact'
-                    }
-                });
-                
-                const count = await response2.json();
-                console.log('📊 Total rows in table:', count);
-                
-                // Test 3: Try different column names based on schema
-                console.log('📋 Test 3: Testing with exact column names...');
-                const response3 = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,prix_unitaire,unite`, {
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                const data3 = await response3.json();
-                console.log('✅ Specific columns query:', data3.length, 'services found');
-                
-                // Alert summary
-                alert(`🔍 Supabase Diagnostic Results:
+        // Services basés sur votre catalogue Supabase
+        const servicesData = [
+            { id: '1', nom: 'Ouverture de terrain (printemps)', categorie: 'Saisonnier', prix_unitaire: 275, unite: 'unité', description: 'Préparation du terrain pour la saison' },
+            { id: '2', nom: 'Murets de soutènement (pierre ou bloc)', categorie: 'Structures', prix_unitaire: 220, unite: 'm²', description: 'Construction de murets' },
+            { id: '3', nom: 'Taille de haies/arbustes', categorie: 'Entretien', prix_unitaire: 85, unite: 'heure', description: 'Taille professionnelle' },
+            { id: '4', nom: 'Gazon synthétique (installé)', categorie: 'Pelouse', prix_unitaire: 85, unite: 'm²', description: 'Installation complète' },
+            { id: '5', nom: 'Cuisine extérieure complète', categorie: 'Aménagements', prix_unitaire: 19000, unite: 'unité', description: 'Cuisine extérieure avec équipements' },
+            { id: '6', nom: 'Gazonnement (rouleau de tourbe)', categorie: 'Pelouse', prix_unitaire: 7.5, unite: 'm²', description: 'Pose de tourbe' },
+            { id: '7', nom: 'Enrochement paysager', categorie: 'Rocailles', prix_unitaire: 190, unite: 'm²', description: 'Aménagement rocheux' },
+            { id: '8', nom: 'Déneigement sélectif paysager', categorie: 'Hiver', prix_unitaire: 355, unite: 'forfait mensuel', description: 'Service hivernal' },
+            { id: '9', nom: 'Marches d\'escalier (pierre ou béton)', categorie: 'Structures', prix_unitaire: 250, unite: 'marche', description: 'Construction d\'escaliers' },
+            { id: '10', nom: 'Désherbagе manuel et binage', categorie: 'Entretien', prix_unitaire: 60, unite: 'heure', description: 'Entretien manuel' },
+            { id: '11', nom: 'Éclairage extérieur DEL (avec timer intelli)', categorie: 'Électricité', prix_unitaire: 250, unite: 'point', description: 'Installation d\'éclairage' },
+            { id: '12', nom: 'Création de massifs de vivaces', categorie: 'Plantation', prix_unitaire: 60, unite: 'm²', description: 'Aménagement floral' },
+            { id: '13', nom: 'Pavé uni (installation complète)', categorie: 'Revêtements', prix_unitaire: 110, unite: 'm²', description: 'Pavage complet' },
+            { id: '14', nom: 'Bassins ou fontaines d\'eau', categorie: 'Eau', prix_unitaire: 7500, unite: 'unité', description: 'Installation aquatique' },
+            { id: '15', nom: 'Fertilisation biologique (engrais organique)', categorie: 'Fertilisation', prix_unitaire: 65, unite: 'application', description: 'Traitement biologique' },
+            { id: '16', nom: 'Terrasse en bois exotique', categorie: 'Terrasses', prix_unitaire: 220, unite: 'm²', description: 'Construction terrasse' },
+            { id: '17', nom: 'Plantation d\'arbres (petit calibre)', categorie: 'Plantation', prix_unitaire: 180, unite: 'arbre', description: 'Plantation professionnelle' },
+            { id: '18', nom: 'Entretien floral hebdomadaire', categorie: 'Entretien', prix_unitaire: 95, unite: 'visite', description: 'Entretien régulier' },
+            { id: '19', nom: 'Pergola en bois (sur mesure)', categorie: 'Structures', prix_unitaire: 6500, unite: 'unité', description: 'Construction pergola' },
+            { id: '20', nom: 'Fermeture de terrain (automne)', categorie: 'Saisonnier', prix_unitaire: 300, unite: 'unité', description: 'Préparation hivernale' },
+            { id: '21', nom: 'Système d\'irrigation automatisé', categorie: 'Irrigation', prix_unitaire: 850, unite: 'zone', description: 'Arrosage automatique' },
+            { id: '22', nom: 'Dallage en pierre naturelle', categorie: 'Revêtements', prix_unitaire: 180, unite: 'm²', description: 'Revêtement pierre' },
+            { id: '23', nom: 'Foyer extérieur intégré (gaz ou bois)', categorie: 'Chauffage', prix_unitaire: 4500, unite: 'unité', description: 'Installation foyer' },
+            { id: '24', nom: 'Terrasse en bois composite', categorie: 'Terrasses', prix_unitaire: 170, unite: 'm²', description: 'Terrasse composite' },
+            { id: '25', nom: 'Protection hivernale des végétaux', categorie: 'Protection', prix_unitaire: 125, unite: 'unité', description: 'Protection hiver' }
+        ];
 
-Test 1 - All columns: ${data1.length} services
-Test 3 - Specific columns: ${data3.length} services
-
-${data1.length === 0 ? 
-    '❌ PROBLEM: Table appears empty or RLS is blocking access!\n\nSolutions:\n- Disable RLS temporarily\n- Check anon key permissions\n- Verify table has data' : 
-    '✅ Table has data - column names might be the issue'
-}
-
-Check console for detailed column information.`);
-                
-            } catch (error) {
-                console.error('❌ Network error:', error);
-                alert(`❌ Network Error: ${error.message}`);
-            }
-        }
-
-        // DEBUG: Test n8n webhook
-        async function testN8nWebhook() {
-            console.log('🚀 Testing n8n webhook...');
-            console.log('Webhook URL:', N8N_WEBHOOK_URL);
-            
-            const testData = {
-                nom: "Test Client",
-                email: "test@example.com",
-                telephone: "514-555-1234",
-                adresse: "123 Test Street",
-                services: "Test Service,1,unit",
-                notes: "Test webhook connection"
-            };
-            
-            try {
-                console.log('📤 Sending test data:', testData);
-                
-                const response = await fetch(N8N_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(testData)
-                });
-                
-                console.log('📡 n8n response status:', response.status);
-                console.log('📡 n8n response headers:', [...response.headers.entries()]);
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('❌ n8n webhook error:', errorText);
-                    alert(`❌ n8n Webhook Error ${response.status}: ${errorText}`);
-                    return;
-                }
-                
-                const result = await response.json();
-                console.log('✅ n8n webhook success:', result);
-                alert(`✅ n8n Webhook working! Response: ${JSON.stringify(result, null, 2)}`);
-                
-            } catch (error) {
-                console.error('❌ n8n webhook network error:', error);
-                alert(`❌ n8n Webhook Network Error: ${error.message}\n\nPossible causes:\n- Webhook URL incorrect\n- n8n workflow not active\n- CORS issues`);
-            }
-        }
-
-        // Quick fix function to reload services
-        async function quickFixSupabase() {
-            console.log('🔧 Quick fix: Attempting to reload services...');
-            
-            // Show loading in services container
-            const container = document.getElementById('servicesContainer');
-            container.innerHTML = '<div class="loading">🔄 Rechargement des services...</div>';
-            
-            try {
-                // Try multiple approaches
-                const approaches = [
-                    // Approach 1: All columns, no filters
-                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue`, name: 'All columns' },
-                    // Approach 2: Only essential columns
-                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue?select=id,nom,prix_unitaire,unite`, name: 'Essential columns' },
-                    // Approach 3: With RLS bypass attempt (if user has elevated permissions)
-                    { url: `${SUPABASE_URL}/rest/v1/services_catalogue?select=*`, name: 'RLS bypass attempt', headers: { 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
-                ];
-                
-                for (const approach of approaches) {
-                    console.log(`🔧 Trying: ${approach.name}...`);
-                    
-                    const response = await fetch(approach.url, {
-                        headers: {
-                            'apikey': SUPABASE_ANON_KEY,
-                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                            'Content-Type': 'application/json',
-                            ...(approach.headers || {})
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log(`✅ ${approach.name} success:`, data.length, 'services');
-                        
-                        if (data.length > 0) {
-                            availableServices = data.map(service => ({
-                                id: service.id,
-                                nom: service.nom || service.name || 'Service sans nom',
-                                description: service.description || '',
-                                prix_unitaire: service.prix_unitaire || service.price || 0,
-                                unite: service.unite || service.unit || 'unité',
-                                categorie: service.categorie || service.category || ''
-                            }));
-                            
-                            renderServices();
-                            alert(`✅ Services rechargés avec succès!\n\n${data.length} services trouvés avec l'approche: ${approach.name}`);
-                            return;
-                        }
-                    }
-                }
-                
-                // If all approaches fail
-                throw new Error('Toutes les approches ont échoué');
-                
-            } catch (error) {
-                console.error('❌ Quick fix failed:', error);
-                renderFallbackServices();
-                alert(`❌ Impossible de charger les services depuis Supabase.\n\nUtilisation des services de démonstration.\n\nProblème possible:\n- RLS (Row Level Security) bloque l'accès\n- Table vide\n- Permissions insuffisantes\n\nVeuillez vérifier votre configuration Supabase.`);
-            }
-        }
-
-        // Load services from Supabase on page load
+        // Load services (try Supabase first, fallback to local data)
         async function loadServices() {
-            console.log('🌱 Loading services from Supabase...');
+            console.log('🌱 Loading services...');
             
             try {
-                // Try the simplest possible query first
-                console.log('📋 Trying simplest query: select all...');
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
@@ -876,144 +615,176 @@ Check console for detailed column information.`);
                     }
                 });
 
-                console.log('📡 Supabase response status:', response.status);
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('❌ Supabase API error:', response.status, errorText);
-                    throw new Error(`Supabase API error: ${response.status} - ${errorText}`);
+                if (response.ok) {
+                    const supabaseServices = await response.json();
+                    console.log('✅ Loaded from Supabase:', supabaseServices.length, 'services');
+                    
+                    if (supabaseServices.length > 0) {
+                        availableServices = supabaseServices;
+                        populateServiceDropdown();
+                        return;
+                    }
                 }
-
-                const allServices = await response.json();
-                console.log('✅ Raw Supabase data:', allServices.length, 'total services');
-                console.log('📊 Sample service:', allServices[0]);
-                
-                if (allServices.length === 0) {
-                    console.error('❌ Table is empty or RLS is blocking access');
-                    throw new Error('No services found in database');
-                }
-                
-                // Map the services to our expected format
-                availableServices = allServices.map(service => ({
-                    id: service.id,
-                    nom: service.nom,
-                    description: service.description || '',
-                    prix_unitaire: service.prix_unitaire,
-                    unite: service.unite,
-                    categorie: service.categorie || ''
-                }));
-                
-                console.log('✅ Mapped services:', availableServices.length);
-                renderServices();
-                
             } catch (error) {
-                console.error('❌ Error loading services from Supabase:', error);
-                console.log('🔄 Falling back to hardcoded services');
-                renderFallbackServices();
+                console.log('⚠️ Supabase failed, using local data:', error.message);
             }
+            
+            // Fallback to local data
+            console.log('🔄 Using local services data');
+            availableServices = servicesData;
+            populateServiceDropdown();
         }
 
-        // Render services in the form
-        function renderServices() {
-            const container = document.getElementById('servicesContainer');
+        // Populate service dropdown
+        function populateServiceDropdown() {
+            const select = document.getElementById('serviceSelect');
+            select.innerHTML = '<option value="">Sélectionnez un service...</option>';
             
-            if (availableServices.length === 0) {
-                console.log('⚠️ No services found, using fallback');
-                renderFallbackServices();
+            // Group by category
+            const categories = {};
+            availableServices.forEach(service => {
+                const cat = service.categorie || 'Autres';
+                if (!categories[cat]) {
+                    categories[cat] = [];
+                }
+                categories[cat].push(service);
+            });
+            
+            // Add options grouped by category
+            Object.keys(categories).sort().forEach(category => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = category;
+                
+                categories[category].forEach(service => {
+                    const option = document.createElement('option');
+                    option.value = service.id;
+                    option.textContent = `${service.nom} (${service.prix_unitaire}$ / ${service.unite})`;
+                    optgroup.appendChild(option);
+                });
+                
+                select.appendChild(optgroup);
+            });
+            
+            console.log('✅ Dropdown populated with', availableServices.length, 'services');
+        }
+
+        // Handle service selection
+        document.getElementById('serviceSelect').addEventListener('change', function() {
+            const addBtn = document.getElementById('addServiceBtn');
+            const quantityInput = document.getElementById('quantityInput');
+            
+            if (this.value) {
+                addBtn.disabled = false;
+                quantityInput.focus();
+                
+                // Update quantity input placeholder with unit
+                const selectedService = availableServices.find(s => s.id === this.value);
+                if (selectedService) {
+                    quantityInput.placeholder = `Quantité en ${selectedService.unite}`;
+                }
+            } else {
+                addBtn.disabled = true;
+                quantityInput.placeholder = '0';
+            }
+        });
+
+        // Add service to selection
+        document.getElementById('addServiceBtn').addEventListener('click', function() {
+            const serviceSelect = document.getElementById('serviceSelect');
+            const quantityInput = document.getElementById('quantityInput');
+            
+            const serviceId = serviceSelect.value;
+            const quantity = parseFloat(quantityInput.value);
+            
+            if (!serviceId || !quantity || quantity <= 0) {
+                alert('Veuillez sélectionner un service et entrer une quantité valide.');
                 return;
             }
+            
+            const service = availableServices.find(s => s.id === serviceId);
+            if (!service) return;
+            
+            // Check if service already selected
+            const existingIndex = selectedServices.findIndex(s => s.id === serviceId);
+            if (existingIndex !== -1) {
+                // Update quantity
+                selectedServices[existingIndex].quantity += quantity;
+                selectedServices[existingIndex].total = selectedServices[existingIndex].quantity * service.prix_unitaire;
+            } else {
+                // Add new service
+                selectedServices.push({
+                    id: serviceId,
+                    nom: service.nom,
+                    prix_unitaire: service.prix_unitaire,
+                    unite: service.unite,
+                    quantity: quantity,
+                    total: quantity * service.prix_unitaire
+                });
+            }
+            
+            // Reset form
+            serviceSelect.value = '';
+            quantityInput.value = '';
+            quantityInput.placeholder = '0';
+            document.getElementById('addServiceBtn').disabled = true;
+            
+            // Update display
+            updateSelectedServicesList();
+        });
 
-            console.log('🎨 Rendering', availableServices.length, 'services from Supabase');
-
-            let servicesHTML = '';
-            availableServices.forEach(service => {
-                servicesHTML += `
-                    <div class="service-item" id="service_item_${service.id}">
-                        <div class="service-header" onclick="toggleServiceByHeader('${service.id}', event)">
-                            <input type="checkbox" class="service-checkbox" id="service_${service.id}" data-service-id="${service.id}">
-                            <label for="service_${service.id}" class="service-name">${service.nom}</label>
-                            <span class="service-price">${service.prix_unitaire}$ / ${service.unite}</span>
+        // Update selected services list
+        function updateSelectedServicesList() {
+            const container = document.getElementById('selectedServicesList');
+            
+            if (selectedServices.length === 0) {
+                container.innerHTML = '<div class="empty-services">Aucun service sélectionné</div>';
+                return;
+            }
+            
+            let html = '';
+            selectedServices.forEach((service, index) => {
+                html += `
+                    <div class="service-item">
+                        <div class="service-info">
+                            <div class="service-name">${service.nom}</div>
+                            <div class="service-details">${service.quantity} ${service.unite} × ${service.prix_unitaire}$</div>
                         </div>
-                        ${service.description ? `<div class="service-description">${service.description}</div>` : ''}
-                        <div class="quantity-input" id="quantity_${service.id}">
-                            <input type="number" placeholder="Quantité (${service.unite})" min="1" step="0.1" id="qty_${service.id}">
-                        </div>
+                        <div class="service-price">${service.total.toFixed(2)}$</div>
+                        <button type="button" class="remove-btn" onclick="removeService(${index})">✕</button>
                     </div>
                 `;
             });
             
-            container.innerHTML = servicesHTML;
-
-            // Add event listeners to checkboxes
-            availableServices.forEach(service => {
-                const checkbox = document.getElementById(`service_${service.id}`);
-                if (checkbox) {
-                    checkbox.addEventListener('change', function() {
-                        handleServiceToggle(service.id);
-                    });
-                }
-            });
-
-            console.log('✅ Services rendered successfully!');
-        }
-
-        // Fallback services if Supabase fails
-        function renderFallbackServices() {
-            console.log('🔄 Using fallback services');
-            availableServices = [
-                { id: 'fallback_1', nom: 'Tonte de pelouse', prix_unitaire: 29, unite: 'm²', description: 'Tonte régulière avec ramassage' },
-                { id: 'fallback_2', nom: 'Taille de haies', prix_unitaire: 85, unite: 'heure', description: 'Taille professionnelle et nettoyage' },
-                { id: 'fallback_3', nom: 'Déneigement', prix_unitaire: 355, unite: 'forfait', description: 'Service de déneigement saisonnier' },
-                { id: 'fallback_4', nom: 'Aménagement paysager', prix_unitaire: 120, unite: 'heure', description: 'Conception et réalisation d\'aménagements' },
-                { id: 'fallback_5', nom: 'Entretien saisonnier', prix_unitaire: 300, unite: 'saison', description: 'Entretien complet selon la saison' }
-            ];
-            renderServices();
-        }
-
-        // Toggle service by clicking on header
-        function toggleServiceByHeader(serviceId, event) {
-            // Prevent double toggle if clicking directly on checkbox
-            if (event && event.target.type === 'checkbox') {
-                return;
-            }
+            // Add total
+            const grandTotal = selectedServices.reduce((sum, service) => sum + service.total, 0);
+            html += `
+                <div class="service-item" style="border-color: #10b981; background: #f0fdf4; font-weight: 600;">
+                    <div class="service-info">
+                        <div class="service-name">Total (avant taxes)</div>
+                        <div class="service-details">${selectedServices.length} service(s) sélectionné(s)</div>
+                    </div>
+                    <div class="service-price" style="font-size: 1.3em;">${grandTotal.toFixed(2)}$</div>
+                    <div style="width: 40px;"></div>
+                </div>
+            `;
             
-            const checkbox = document.getElementById(`service_${serviceId}`);
-            if (checkbox) {
-                checkbox.checked = !checkbox.checked;
-                handleServiceToggle(serviceId);
-            }
+            container.innerHTML = html;
         }
 
-        // Handle service toggle
-        function handleServiceToggle(serviceId) {
-            const checkbox = document.getElementById(`service_${serviceId}`);
-            const quantityDiv = document.getElementById(`quantity_${serviceId}`);
-            const serviceItem = document.getElementById(`service_item_${serviceId}`);
-            
-            if (checkbox && quantityDiv && serviceItem) {
-                if (checkbox.checked) {
-                    quantityDiv.classList.add('show');
-                    serviceItem.classList.add('selected');
-                    const qtyInput = document.getElementById(`qty_${serviceId}`);
-                    if (qtyInput) {
-                        setTimeout(() => qtyInput.focus(), 300);
-                    }
-                } else {
-                    quantityDiv.classList.remove('show');
-                    serviceItem.classList.remove('selected');
-                    const qtyInput = document.getElementById(`qty_${serviceId}`);
-                    if (qtyInput) {
-                        qtyInput.value = '';
-                    }
-                }
-            }
+        // Remove service from selection
+        function removeService(index) {
+            selectedServices.splice(index, 1);
+            updateSelectedServicesList();
         }
 
         // Form submission
         document.getElementById('quoteForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            console.log('📝 Starting form submission...');
+            if (selectedServices.length === 0) {
+                alert('Veuillez sélectionner au moins un service.');
+                return;
+            }
             
             const submitBtn = document.getElementById('submitBtn');
             const successMsg = document.getElementById('successMessage');
@@ -1031,34 +802,15 @@ Check console for detailed column information.`);
                 // Collect form data
                 const formData = new FormData(e.target);
                 const data = Object.fromEntries(formData);
-                console.log('📋 Form data collected:', data);
                 
-                // Collect selected services
-                const selectedServices = [];
-                availableServices.forEach(service => {
-                    const checkbox = document.getElementById(`service_${service.id}`);
-                    const qtyInput = document.getElementById(`qty_${service.id}`);
-                    
-                    if (checkbox && checkbox.checked && qtyInput && qtyInput.value) {
-                        const serviceEntry = `${service.nom},${qtyInput.value},${service.unite}`;
-                        selectedServices.push(serviceEntry);
-                        console.log(`✅ Selected service: ${serviceEntry}`);
-                    }
-                });
+                // Format services string for n8n
+                const servicesString = selectedServices.map(service => 
+                    `${service.nom},${service.quantity},${service.unite}`
+                ).join(';');
                 
-                console.log('🛍️ Total selected services:', selectedServices.length);
+                data.services = servicesString;
                 
-                if (selectedServices.length === 0) {
-                    throw new Error('Veuillez sélectionner au moins un service avec une quantité.');
-                }
-                
-                // Format services string
-                data.services = selectedServices.join(';');
-                console.log('🔗 Services string:', data.services);
-                
-                // Final data to send
-                console.log('📤 Final data to send:', data);
-                console.log('🚀 Sending to webhook:', N8N_WEBHOOK_URL);
+                console.log('📤 Sending data:', data);
                 
                 // Send to n8n webhook
                 const response = await fetch(N8N_WEBHOOK_URL, {
@@ -1069,36 +821,68 @@ Check console for detailed column information.`);
                     body: JSON.stringify(data)
                 });
                 
-                console.log('📡 Response status:', response.status);
-                console.log('📡 Response headers:', [...response.headers.entries()]);
-                
                 if (!response.ok) {
                     const errorText = await response.text();
-                    console.error('❌ Webhook error response:', errorText);
                     throw new Error(errorText || `HTTP Error ${response.status}`);
                 }
                 
                 const result = await response.json();
-                console.log('✅ Success response:', result);
+                console.log('✅ Success:', result);
                 
                 // Show success message
                 successMsg.style.display = 'block';
                 document.getElementById('quoteForm').style.display = 'none';
-                
-                // Scroll to success message
                 successMsg.scrollIntoView({ behavior: 'smooth' });
                 
             } catch (error) {
-                console.error('❌ Form submission error:', error);
+                console.error('❌ Error:', error);
                 document.getElementById('errorText').textContent = error.message;
                 errorMsg.style.display = 'block';
                 errorMsg.scrollIntoView({ behavior: 'smooth' });
             } finally {
-                // Re-enable submit button
                 submitBtn.disabled = false;
                 submitBtn.textContent = '📋 Envoyer ma demande de soumission';
             }
         });
+
+        // Test functions
+        async function testSupabaseConnection() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                alert(`✅ Supabase Test: ${response.status}\n\nServices trouvés: ${data.length}\n\n${data.length === 0 ? 'Utilisation des données locales.' : 'Données Supabase chargées!'}`);
+            } catch (error) {
+                alert(`❌ Supabase Error: ${error.message}`);
+            }
+        }
+
+        async function testN8nWebhook() {
+            const testData = {
+                nom: "Test Client",
+                email: "test@example.com",
+                services: "Test Service,1,unité"
+            };
+            
+            try {
+                const response = await fetch(N8N_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testData)
+                });
+                
+                const result = await response.json();
+                alert(`✅ n8n Webhook Test: ${response.status}\n\nRéponse: ${JSON.stringify(result, null, 2)}`);
+            } catch (error) {
+                alert(`❌ n8n Webhook Error: ${error.message}`);
+            }
+        }
 
         // Load services when page loads
         document.addEventListener('DOMContentLoaded', loadServices);
