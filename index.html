@@ -111,35 +111,43 @@
             margin-bottom: 15px;
             border: 2px solid transparent;
             transition: all 0.3s ease;
-            cursor: pointer;
         }
 
         .service-item:hover {
             border-color: #2c5530;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
         .service-item.selected {
             border-color: #2c5530;
             background: #f0f7f1;
+            box-shadow: 0 3px 10px rgba(44, 85, 48, 0.1);
         }
 
         .service-header {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
+            cursor: pointer;
         }
 
         .service-checkbox {
             margin-right: 15px;
-            transform: scale(1.2);
+            transform: scale(1.3);
+            cursor: pointer;
         }
 
         .service-name {
             font-weight: 600;
             color: #2c5530;
             flex-grow: 1;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+
+        .service-name:hover {
+            color: #1a3020;
         }
 
         .service-price {
@@ -288,11 +296,6 @@
                     <textarea id="notes" name="notes" placeholder="Informations supplémentaires, contraintes particulières, demandes spéciales..."></textarea>
                 </div>
 
-                <!-- DEBUG: Test Supabase Connection -->
-                <button type="button" onclick="testSupabaseConnection()" style="background: #e74c3c; margin-bottom: 20px; padding: 10px; border: none; color: white; border-radius: 5px; width: 100%;">
-                    🔍 TEST SUPABASE CONNECTION
-                </button>
-
                 <button type="submit" class="submit-btn" id="submitBtn">
                     📋 Envoyer ma demande de soumission
                 </button>
@@ -362,7 +365,7 @@
             console.log('🌱 Loading services from Supabase...');
             
             // Check if configuration is set
-            if (SUPABASE_URL === 'https://dfrjllweqpmdtqwofshd.supabase.co' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY_HERE') {
+            if (SUPABASE_URL === 'https://dfrjllweqpmdtqwofshd.supabase.co' || SUPABASE_ANON_KEY === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmcmpsbHdlcXBtZHRxd29mc2hkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyMjk3MjQsImV4cCI6MjA2NDgwNTcyNH0.ggtZshpHhIO4gdNaSqW6vELxYBCrLlt2oeiydWL-tyc') {
                 console.warn('⚠️ Supabase configuration not set, using fallback services');
                 renderFallbackServices();
                 return;
@@ -405,10 +408,10 @@
             }
 
             container.innerHTML = availableServices.map(service => `
-                <div class="service-item" onclick="toggleService('${service.id}')">
-                    <div class="service-header">
-                        <input type="checkbox" class="service-checkbox" id="service_${service.id}" onchange="handleServiceToggle('${service.id}')">
-                        <span class="service-name">${service.nom}</span>
+                <div class="service-item" id="service_item_${service.id}">
+                    <div class="service-header" onclick="toggleServiceByHeader('${service.id}', event)">>
+                        <input type="checkbox" class="service-checkbox" id="service_${service.id}" data-service-id="${service.id}">
+                        <label for="service_${service.id}" class="service-name">${service.nom}</label>
                         <span class="service-price">${service.prix_unitaire}$ / ${service.unite}</span>
                     </div>
                     ${service.description ? `<div class="service-description">${service.description}</div>` : ''}
@@ -417,6 +420,16 @@
                     </div>
                 </div>
             `).join('');
+
+            // Add event listeners to checkboxes
+            availableServices.forEach(service => {
+                const checkbox = document.getElementById(`service_${service.id}`);
+                if (checkbox) {
+                    checkbox.addEventListener('change', function() {
+                        handleServiceToggle(service.id);
+                    });
+                }
+            });
         }
 
         // Fallback services if Supabase fails
@@ -431,27 +444,45 @@
             renderServices();
         }
 
-        // Toggle service selection
-        function toggleService(serviceId) {
+        // Remove the old toggle function
+        // Toggle service selection - REMOVED
+
+        // Toggle service by clicking on header
+        function toggleServiceByHeader(serviceId, event) {
+            // Prevent double toggle if clicking directly on checkbox
+            if (event && event.target.type === 'checkbox') {
+                return;
+            }
+            
             const checkbox = document.getElementById(`service_${serviceId}`);
-            checkbox.checked = !checkbox.checked;
-            handleServiceToggle(serviceId);
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+                handleServiceToggle(serviceId);
+            }
         }
 
         // Handle service toggle
         function handleServiceToggle(serviceId) {
             const checkbox = document.getElementById(`service_${serviceId}`);
             const quantityDiv = document.getElementById(`quantity_${serviceId}`);
-            const serviceItem = checkbox.closest('.service-item');
+            const serviceItem = document.getElementById(`service_item_${serviceId}`);
             
-            if (checkbox.checked) {
-                quantityDiv.classList.add('show');
-                serviceItem.classList.add('selected');
-                document.getElementById(`qty_${serviceId}`).focus();
-            } else {
-                quantityDiv.classList.remove('show');
-                serviceItem.classList.remove('selected');
-                document.getElementById(`qty_${serviceId}`).value = '';
+            if (checkbox && quantityDiv && serviceItem) {
+                if (checkbox.checked) {
+                    quantityDiv.classList.add('show');
+                    serviceItem.classList.add('selected');
+                    const qtyInput = document.getElementById(`qty_${serviceId}`);
+                    if (qtyInput) {
+                        qtyInput.focus();
+                    }
+                } else {
+                    quantityDiv.classList.remove('show');
+                    serviceItem.classList.remove('selected');
+                    const qtyInput = document.getElementById(`qty_${serviceId}`);
+                    if (qtyInput) {
+                        qtyInput.value = '';
+                    }
+                }
             }
         }
 
