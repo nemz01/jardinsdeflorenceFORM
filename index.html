@@ -735,10 +735,42 @@
                     
                     console.log('✅ Parsed response:', result);
                     console.log('🔍 Result.success:', result.success);
-                    console.log('🔍 Result.data:', result.data);
+                    console.log('🔍 Result keys:', Object.keys(result));
+                    console.log('🔍 Entire result structure:', JSON.stringify(result, null, 2));
                     
-                    // Vérifier explicitement la propriété success
+                    // ✅ NOUVELLE LOGIQUE: Accepter différents formats de réponse
+                    let isSuccess = false;
+                    let successData = null;
+                    
+                    // Format 1: {success: true, data: {...}}
                     if (result.success === true) {
+                        isSuccess = true;
+                        successData = result.data;
+                        console.log('📋 Format 1 detected: {success: true}');
+                    }
+                    // Format 2: Direct data object (sans success wrapper)
+                    else if (result.quote_number || result.id || result.numero_soumission) {
+                        isSuccess = true;
+                        successData = result;
+                        console.log('📋 Format 2 detected: Direct data object');
+                    }
+                    // Format 3: Array avec des objets
+                    else if (Array.isArray(result) && result.length > 0) {
+                        isSuccess = true;
+                        successData = result[0];
+                        console.log('📋 Format 3 detected: Array format');
+                    }
+                    // Format 4: Vérifier si c'est un workflow n8n success
+                    else if (result.message && !result.error) {
+                        isSuccess = true;
+                        successData = result;
+                        console.log('📋 Format 4 detected: Workflow success');
+                    }
+                    
+                    console.log('🎯 Final isSuccess:', isSuccess);
+                    console.log('🎯 Final successData:', successData);
+                    
+                    if (isSuccess) {
                         console.log('🎉 SUCCESS! Showing success message...');
                         
                         // Succès
@@ -746,9 +778,10 @@
                         document.getElementById('error-message').style.display = 'none';
                         document.getElementById('success-message').innerHTML = `
                             <strong>✅ Soumission créée avec succès!</strong><br>
-                            Numéro: ${result.data?.quote_number || 'N/A'}<br>
-                            Total: ${result.data?.total || 'N/A'}$ CAD<br>
-                            Services: ${result.data?.services_count || 'N/A'} service(s)<br>
+                            Numéro: ${successData?.quote_number || successData?.numero_soumission || 'Généré'}<br>
+                            Total: ${successData?.total || 'Calculé'}$ CAD<br>
+                            Services: ${selectedServices.length} service(s)<br>
+                            Statut: ${successData?.statut || 'En traitement'}<br>
                             Nous vous contacterons sous 24-48 heures.
                         `;
                         
@@ -762,8 +795,9 @@
                         return; // Sortir de la fonction
                         
                     } else {
-                        console.log('❌ Success = false, showing error...');
-                        throw new Error(result.message || result.error || 'Erreur lors de la création');
+                        console.log('❌ No success pattern found, showing error...');
+                        console.log('📝 Response was:', JSON.stringify(result, null, 2));
+                        throw new Error(`Format de réponse inattendu. Voir console pour détails.`);
                     }
                 } else {
                     const errorText = await response.text();
