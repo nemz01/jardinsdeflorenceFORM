@@ -314,7 +314,9 @@
 <body>
     <div class="form-container">
         <div class="form-header">
-            <img src="jardins-logo.png" alt="Jardins de Florence Logo" class="logo">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ3aGl0ZSIvPgo8IS0tIE91dGVyIGZyYW1lIC0tPgo8cGF0aCBkPSJNNTAgNTBMNTAgMTUwTDE1MCA1MEw1MCA1MFoiIGZpbGw9IiM4Q0JDOEMiLz4KPHA+YXRoIGQ9Ik0zNTAgNTBMzNTAgMTUwTDI1MCA1MEwzNTAgNTBaIiBmaWxsPSIjOENCQzhDIi8+CjxwYXRoIGQ9Ik01MCAzNTBMNTAgMjUwTDE1MCAzNTBMNTAgMzUwWiIgZmlsbD0iIzhDQkM4QyIvPgo8cGF0aCBkPSJNMzUwIDM1MEwzNTAgMjUwTDI1MCAzNTBMMzUwIDM1MFoiIGZpbGw9IiM4Q0JDOEMiLz4KPCEtLSBUZXh0IC0tPgo8dGV4dCB4PSIyMDAiIHk9IjE0MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjI4IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzJkM2EyZCI+SkFSRElOUzwvdGV4dD4KPHRleHQgeD0iMjAwIiB5PSIxODAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZm9udC1zdHlsZT0iaXRhbGljIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNmE3YzZhIj5kZTwvdGV4dD4KPHRleHQgeD0iMjAwIiB5PSIyMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyOCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMyZDNhMmQiPkZMT1JFTkNFPC90ZXh0Pgo8dGV4dCB4PSIyMDAiIHk9IjI2MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNmE3YzZhIj7ijZwgRXNwYWNlIEV4dGVyaWV1ciDijZw8L3RleHQ+Cjwvc3ZnPgo=" 
+                 alt="Jardins de Florence Logo" 
+                 class="logo">
             <h1>Jardins de Florence</h1>
             <p>Demande de soumission personnalisée</p>
         </div>
@@ -389,6 +391,11 @@
                     </div>
                 </div>
 
+                <!-- Test Supabase Button (Temporary) -->
+                <button type="button" style="background: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 8px; margin: 10px 0; cursor: pointer;" onclick="testSupabaseConnection()">
+                    🔴 Test Supabase Connection
+                </button>
+
                 <!-- Bouton de Soumission -->
                 <button type="button" class="submit-btn" id="submit-btn" onclick="submitForm()">
                     📋 ENVOYER MA DEMANDE DE SOUMISSION
@@ -446,6 +453,7 @@
         async function loadServices() {
             try {
                 console.log('📄 Loading services from Supabase...');
+                console.log('📡 Fetching from:', `${SUPABASE_URL}/rest/v1/services_catalogue?select=nom,prix_unitaire,unite`);
                 
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=nom,prix_unitaire,unite`, {
                     headers: {
@@ -454,8 +462,12 @@
                     }
                 });
 
+                console.log('📥 Response status:', response.status);
+                console.log('📥 Response headers:', Object.fromEntries(response.headers.entries()));
+
                 if (response.ok) {
                     const services = await response.json();
+                    console.log('📄 Raw response data:', services);
                     console.log(`✅ Loaded from Supabase: ${services.length} services`);
                     
                     if (services.length > 0) {
@@ -464,19 +476,24 @@
                             prix_unitaire: service.prix_unitaire,
                             unite: service.unite
                         }));
+                        console.log('🔄 Processed services:', availableServices);
                     } else {
-                        console.log('📦 Using fallback services');
+                        console.log('⚠️ No services found in Supabase, using fallback services');
                         availableServices = fallbackServices;
                     }
                 } else {
-                    throw new Error(`HTTP ${response.status}`);
+                    const errorText = await response.text();
+                    console.error('❌ HTTP Error:', response.status, errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
                 }
             } catch (error) {
                 console.error('❌ Error loading from Supabase:', error);
+                console.error('❌ Error details:', error.message);
                 console.log('📦 Using fallback services');
                 availableServices = fallbackServices;
             }
             
+            console.log('🎯 Final available services count:', availableServices.length);
             populateServiceDropdown();
         }
 
@@ -837,9 +854,6 @@
             console.log('  SUPABASE_URL:', SUPABASE_URL);
             console.log('  N8N_WEBHOOK_URL:', N8N_WEBHOOK_URL);
             console.log('  SUPABASE_ANON_KEY configured:', SUPABASE_ANON_KEY ? 'Yes ✅' : 'No ❌');
-            
-            // Mettre à jour l'affichage de l'URL
-            document.getElementById('webhook-url-display').textContent = N8N_WEBHOOK_URL;
             
             loadServices();
         });
