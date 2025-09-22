@@ -413,39 +413,73 @@
         let availableServices = [];
         let selectedServices = [];
 
-        // Services de fallback
+        // Services avec tarifs officiels 2025 - Jardins de Florence
         const fallbackServices = [
-            { nom: "Ouverture de terrain", prix_unitaire: 275, unite: "unité" },
-            { nom: "Murets de soutènement", prix_unitaire: 220, unite: "m²" },
-            { nom: "Taille de haies/arbustes", prix_unitaire: 85, unite: "heure" },
-            { nom: "Gazon synthétique", prix_unitaire: 85, unite: "m²" },
-            { nom: "Cuisine extérieure complète", prix_unitaire: 19000, unite: "unité" },
-            { nom: "Pergola", prix_unitaire: 8500, unite: "unité" },
-            { nom: "Bassins ou fontaines d'eau", prix_unitaire: 4500, unite: "unité" },
-            { nom: "Système d'irrigation automatisé", prix_unitaire: 2550, unite: "zone" },
-            { nom: "Foyer extérieur intégré (gaz ou bois)", prix_unitaire: 4500, unite: "unité" },
-            { nom: "Pavé uni (installation complète)", prix_unitaire: 110, unite: "m²" },
-            { nom: "Pierre naturelle", prix_unitaire: 135, unite: "m²" },
-            { nom: "Fertilisation biologique (engrais organique)", prix_unitaire: 65, unite: "application" },
-            { nom: "Marches d'escalier extérieur", prix_unitaire: 320, unite: "marche" },
+            // GAZON ET PLANTATION
+            { nom: "Gazon en plaques", prix_unitaire: 2, unite: "pi²" },
+            { nom: "Trèfle", prix_unitaire: 2.40, unite: "pi²" },
+            { nom: "Thym", prix_unitaire: 2.40, unite: "pi²" },
+            { nom: "Rouleau gazon (10 pieds²)", prix_unitaire: 3.50, unite: "rouleau" },
+            
+            // PAVÉ UNI ET HARDSCAPING
+            { nom: "Pavé uni - Allée piétonne (base 9\", sol sablonneux)", prix_unitaire: 35, unite: "pi²" },
+            { nom: "Pavé uni - Stationnement (base 12\", sol sablonneux)", prix_unitaire: 29, unite: "pi²" },
+            { nom: "Pavé uni - Allée piétonne (base 12\", sol argileux)", prix_unitaire: 37, unite: "pi²" },
+            { nom: "Pavé uni - Stationnement (base 16\", sol argileux)", prix_unitaire: 40, unite: "pi²" },
+            { nom: "Pierre naturelle", prix_unitaire: 45, unite: "pi²" },
+            { nom: "Pierre taillée", prix_unitaire: 65, unite: "pi²" },
+            { nom: "Béton", prix_unitaire: 59, unite: "pi²" },
+            { nom: "Pierre taillée béton", prix_unitaire: 67, unite: "pi²" },
+            { nom: "Finition 0-3/4\"", prix_unitaire: 25.50, unite: "pi²" },
+            { nom: "Finition poussière", prix_unitaire: 40, unite: "pi²" },
+            
+            // ÉCLAIRAGE
+            { nom: "Ensemble éclairage de base (transformateur 3 zones + 10 projecteurs)", prix_unitaire: 4000, unite: "ensemble" },
+            { nom: "Projecteur additionnel (système JdF)", prix_unitaire: 300, unite: "projecteur" },
+            { nom: "Projecteur (système existant)", prix_unitaire: 350, unite: "projecteur" },
+            { nom: "Lumière sur pied (système JdF)", prix_unitaire: 550, unite: "lumière" },
+            { nom: "Lumière sur pied (système existant)", prix_unitaire: 600, unite: "lumière" },
+            
+            // AUTRES SERVICES PAYSAGERS
+            { nom: "Ruisseau sec", prix_unitaire: 16, unite: "pi²" },
+            { nom: "Système d'irrigation automatisée", prix_unitaire: 1100, unite: "zone" },
+            { nom: "Livraison (trailer)", prix_unitaire: 100, unite: "chargement" },
+            { nom: "Transport 12 roues", prix_unitaire: 160, unite: "heure" },
+            
+            // SERVICES ADDITIONNELS POPULAIRES
             { nom: "Plantation d'arbres", prix_unitaire: 350, unite: "arbre" },
-            { nom: "Massifs de vivaces", prix_unitaire: 85, unite: "m²" },
-            { nom: "Gazon en plaques", prix_unitaire: 12, unite: "m²" },
-            { nom: "Tonte de pelouse", prix_unitaire: 29, unite: "m²" },
-            { nom: "Déneigement", prix_unitaire: 355, unite: "forfait" },
+            { nom: "Massifs de vivaces", prix_unitaire: 85, unite: "pi²" },
+            { nom: "Murets de soutènement", prix_unitaire: 220, unite: "pi²" },
+            { nom: "Taille de haies/arbustes", prix_unitaire: 85, unite: "heure" },
+            { nom: "Marches d'escalier extérieur", prix_unitaire: 320, unite: "marche" },
+            { nom: "Terrasse en bois", prix_unitaire: 165, unite: "pi²" },
+            { nom: "Clôture décorative", prix_unitaire: 95, unite: "m" },
             { nom: "Aménagement paysager", prix_unitaire: 120, unite: "heure" },
             { nom: "Entretien saisonnier", prix_unitaire: 300, unite: "saison" },
-            { nom: "Terrasse en bois", prix_unitaire: 165, unite: "m²" },
-            { nom: "Clôture décorative", prix_unitaire: 95, unite: "m" },
-            { nom: "Désherbage", prix_unitaire: 45, unite: "m²" },
-            { nom: "Entretien floral", prix_unitaire: 75, unite: "heure" },
-            { nom: "Fermeture de terrain", prix_unitaire: 245, unite: "unité" }
+            
+            // PERSONNEL (pour projets spéciaux)
+            { nom: "Chef d'équipe", prix_unitaire: 700, unite: "jour" },
+            { nom: "Assistant chef d'équipe", prix_unitaire: 625, unite: "jour" },
+            { nom: "Paysagiste", prix_unitaire: 575, unite: "jour" },
+            { nom: "Assistant paysagiste", prix_unitaire: 525, unite: "jour" },
+            { nom: "Opérateur", prix_unitaire: 750, unite: "jour" },
+            { nom: "Polyvalent", prix_unitaire: 525, unite: "jour" },
+            { nom: "Charpentier menuisier", prix_unitaire: 900, unite: "jour" },
+            
+            // MACHINERIE (pour gros projets)
+            { nom: "Excavatrice 5.5t avec opérateur", prix_unitaire: 1400, unite: "jour" },
+            { nom: "Excavatrice 1.7t avec opérateur", prix_unitaire: 1250, unite: "jour" },
+            { nom: "Bobcat 2.7t avec opérateur", prix_unitaire: 1100, unite: "jour" },
+            { nom: "Plaque vibrante 600lbs", prix_unitaire: 225, unite: "jour" },
+            { nom: "Brouette motorisée", prix_unitaire: 300, unite: "jour" },
+            { nom: "Déchiqueteuse", prix_unitaire: 440, unite: "jour" },
+            { nom: "Essoucheuse", prix_unitaire: 300, unite: "jour" }
         ];
 
         // Charger les services depuis Supabase
         async function loadServices() {
             try {
-                console.log('📄 Loading services from Supabase...');
+                console.log('🔄 Loading services from Supabase...');
                 console.log('📡 Fetching from:', `${SUPABASE_URL}/rest/v1/services_catalogue?select=nom,prix_unitaire,unite`);
                 
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/services_catalogue?select=nom,prix_unitaire,unite`, {
@@ -469,9 +503,9 @@
                             prix_unitaire: service.prix_unitaire,
                             unite: service.unite
                         }));
-                        console.log('🔄 Processed services:', availableServices);
+                        console.log('📄 Processed services:', availableServices);
                     } else {
-                        console.log('⚠️ No services found in Supabase, using fallback services');
+                        console.log('⚠️ No services found in Supabase, using 2025 official pricing');
                         availableServices = fallbackServices;
                     }
                 } else {
@@ -482,7 +516,7 @@
             } catch (error) {
                 console.error('❌ Error loading from Supabase:', error);
                 console.error('❌ Error details:', error.message);
-                console.log('📦 Using fallback services');
+                console.log('📦 Using official 2025 pricing structure');
                 availableServices = fallbackServices;
             }
             
@@ -711,7 +745,7 @@
                 };
 
                 console.log('📤 Submitting form data:', formData);
-                console.log('📋 Services format:', formData.services);
+                console.log('🔍 Services format:', formData.services);
                 console.log('📡 Sending to:', N8N_WEBHOOK_URL);
 
                 // Envoyer à n8n avec timeout
@@ -842,11 +876,13 @@
 
         // Initialisation avec vérification de configuration
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Initializing form...');
+            console.log('🚀 Initializing form with official 2025 pricing...');
             console.log('🔧 Configuration:');
             console.log('  SUPABASE_URL:', SUPABASE_URL);
             console.log('  N8N_WEBHOOK_URL:', N8N_WEBHOOK_URL);
             console.log('  SUPABASE_ANON_KEY configured:', SUPABASE_ANON_KEY ? 'Yes ✅' : 'No ❌');
+            console.log('  Pricing Year: 2025 (Official)');
+            console.log('  Services Available:', fallbackServices.length);
             
             loadServices();
         });
